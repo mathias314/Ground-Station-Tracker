@@ -1,5 +1,28 @@
+"""
+-------------------------------------------------------------------------------
+MIT License
+Copyright (c) 2021 Mathew Clutter
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-------------------------------------------------------------------------------
+"""
+
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer, QThread, QObject, pyqtSignal
+from PyQt5.QtCore import QTimer, QThread, QObject, pyqtSignal, QSortFilterProxyModel, Qt
+from PyQt5.QtWidgets import QCompleter, QComboBox
 from designerFile import Ui_MainWindow
 import sys
 from Balloon_Coordinates import Balloon_Coordinates
@@ -10,13 +33,17 @@ import serial.tools.list_ports
 import time
 
 
-# todo: set up git repo/other backup
-# todo: input validation
 # todo: make selecting IMEI/COM port easier
 # todo: clean up code (Ground_Station_Motors)
+# todo: make window scale/look good (bigger text)
 # todo: display balloon info and calculation
 # todo: display error messages in GUI
-# todo: make window scale/look good (bigger text)
+# todo: refresh arduino list/autoconnect to arduino?, check if disconnected?
+# todo: write documentation
+
+# todo: automatically grab initial azimuth/elevation
+# todo: incorporate IMU
+# todo: predict next iridium ping
 # todo: implement map of balloon location
 
 
@@ -29,8 +56,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.ports = serial.tools.list_ports.comports()
         self.portNames = []
-
-        self.timer = QTimer()
 
         self.arduinoConnected = False
         self.IMEIAssigned = False
@@ -55,6 +80,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.COMPortComboBox.addItem("[{}] {}: {}".format(i, port, desc))
             self.portNames.append("{}".format(port))
             i += 1
+
+        # IMEI combobox search stuff
+        # self.IMEIComboBox.setFocusPolicy(Qt.StrongFocus)
+        # self.IMEIComboBox.setEditable(True)
+        #
+        # self.pFilterModel = QSortFilterProxyModel(self)
+        # self.pFilterModel.setFilterCaseSensitivity(Qt.CaseInsensitive)
+        # self.pFilterModel.setSourceModel(self.model())
 
         self.confirmIMEIButton.clicked.connect(self.assignIMEI)
 
@@ -135,8 +168,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def getGSLocation(self):
         if self.arduinoConnected:
-            self.GSMotors.warm_start()  # todo handle if arduino doesn't get gps location
-            time.sleep(1)
+            check = self.GSMotors.warm_start()
+            if not check:  # if the coords cannot be retrieved, return
+                print("failed to get GPS coords, please try again")
+                return
+            time.sleep(.25)
 
             GSCoords = self.GSMotors.req_GPS()
             self.GSMotors.print_GPS()
@@ -153,30 +189,37 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def setGSLocation(self):
-        latStr = self.GSLatBox.toPlainText()  # todo validate the input
-        # latStr = latStr.strip()
-        self.GSLat = float(latStr)
-        print(self.GSLat)
+        try:
+            latStr = self.GSLatBox.toPlainText()
+            latStr = latStr.strip()
+            self.GSLat = float(latStr)
 
-        longStr = self.GSLongBox.toPlainText()
-        self.GSLong = float(longStr)
-        print(self.GSLong)
+            print(self.GSLat)
 
-        altStr = self.GSAltBox.toPlainText()
-        self.GSAlt = float(altStr)
-        print(self.GSAlt)
+            longStr = self.GSLongBox.toPlainText()
+            self.GSLong = float(longStr)
+            print(self.GSLong)
+
+            altStr = self.GSAltBox.toPlainText()
+            self.GSAlt = float(altStr)
+            print(self.GSAlt)
+        except ValueError:
+            print("numbers only for GPS location")
 
     def calibrate(self):
         if self.arduinoConnected:
-            startingAzimuthStr = self.startingAzimuthBox.toPlainText()  # todo validate input
-            startingAzimuth = float(startingAzimuthStr)
-            print(startingAzimuth)
+            try:
+                startingAzimuthStr = self.startingAzimuthBox.toPlainText()
+                startingAzimuth = float(startingAzimuthStr)
+                print(startingAzimuth)
 
-            startingElevationStr = self.startingElevationBox.toPlainText()
-            startingElevation = float(startingElevationStr)
-            print(startingElevation)
+                startingElevationStr = self.startingElevationBox.toPlainText()
+                startingElevation = float(startingElevationStr)
+                print(startingElevation)
 
-            self.GSMotors.calibrate(startingAzimuth, startingElevation)
+                self.GSMotors.calibrate(startingAzimuth, startingElevation)
+            except ValueError:
+                print("numbers only for initial azimuth and elevation")
         else:
             print("not connected to arduino")
 

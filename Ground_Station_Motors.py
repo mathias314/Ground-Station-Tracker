@@ -71,7 +71,7 @@ class Ground_Station_Motors:
 
     def warm_start(self):
         self.Coordinates = self.req_GPS()
-        return
+        return self.Coordinates
 
     def req_GPS(self):
         if self.attempt_num < 100:
@@ -96,7 +96,7 @@ class Ground_Station_Motors:
                 self.req_GPS()
         else:
             print("Failed to request GPS")
-            exit(1)
+            # exit(1)
         return self.Coordinates
 
     def print_GPS(self):
