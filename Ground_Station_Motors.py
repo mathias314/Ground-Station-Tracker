@@ -44,6 +44,7 @@ class Ground_Station_Motors:
 
     def adjustTiltUp(self):
         self.COM_Port.write(b'W')
+        print("adjusting tilt up yeehaw")
         time.sleep(.05)
         return
 

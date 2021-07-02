@@ -28,6 +28,7 @@ import serial.tools.list_ports
 import time
 import csv
 
+
 timer = time.time()
 
 IMEIList = Balloon_Coordinates.list_IMEI()
