@@ -23,7 +23,7 @@ SOFTWARE.
 from Balloon_Coordinates import Balloon_Coordinates
 from Ground_Station_Coordinates import Ground_Station_Coordinates
 from satelliteTrackingMath import trackMath
-from Ground_Station_Motors import Ground_Station_Motors
+from Ground_Station_Arduino import Ground_Station_Motors
 import serial.tools.list_ports
 import time
 import csv

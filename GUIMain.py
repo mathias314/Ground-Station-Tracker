@@ -20,20 +20,18 @@ SOFTWARE.
 -------------------------------------------------------------------------------
 """
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer, QThread, QObject, pyqtSignal, QSortFilterProxyModel, Qt
-from PyQt5.QtWidgets import QCompleter, QComboBox, QDialog, QApplication, QLineEdit, QVBoxLayout
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import QThread, QObject, pyqtSignal, Qt
+from PyQt5.QtWidgets import QCompleter
 from designerFile import Ui_MainWindow
 import sys
 from Balloon_Coordinates import Balloon_Coordinates
-from Ground_Station_Coordinates import Ground_Station_Coordinates
 from satelliteTrackingMath import trackMath
-from Ground_Station_Motors import Ground_Station_Motors
+from Ground_Station_Arduino import Ground_Station_Arduino
 import serial.tools.list_ports
 import time
 
 
-# todo: clean up code (Ground_Station_Motors)
 # todo: make window scale/look good (bigger text)
 # todo: display balloon info and calculation
 # todo: display error messages in GUI
@@ -63,7 +61,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.tracking = False
 
-        self.GSMotors = None  # classes will be instantiated later
+        self.GSArduino = None  # classes will be instantiated later
         self.Balloon = None
 
         self.trackThread = None
@@ -115,23 +113,15 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.IMEIAssigned = False
         return
 
-    """
-    def assignCOMPort(self):
-        user_port = self.COMPortComboBox.currentIndex()
-        COMPortAssigned = True
-        print(user_port)
-        return True
-    """
-
     def connectToArduino(self):
         if not self.arduinoConnected:
-            self.GSMotors = Ground_Station_Motors(self.portNames[self.COMPortComboBox.currentIndex() - 1], 9600)
+            self.GSArduino = Ground_Station_Arduino(self.portNames[self.COMPortComboBox.currentIndex() - 1], 9600)
         self.arduinoConnected = True
         return
 
     def tiltUp(self):
         if self.arduinoConnected:
-            self.GSMotors.adjustTiltUp()
+            self.GSArduino.adjustTiltUp()
             print("adjusting tilt up 1 degree")
         else:
             print("Unable to connect to ground station motors")
@@ -140,7 +130,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def tiltDown(self):
         if self.arduinoConnected:
-            self.GSMotors.adjustTiltDown()
+            self.GSArduino.adjustTiltDown()
             print("adjusting tilt down 1 degree")
         else:
             print("Unable to connect to ground station motors")
@@ -149,7 +139,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def panLeft(self):
         if self.arduinoConnected:
-            self.GSMotors.adjustPanNegative()
+            self.GSArduino.adjustPanNegative()
             print("adjusting pan 1 degree negative")
         else:
             print("Unable to connect to ground station motors")
@@ -158,7 +148,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def panRight(self):
         if self.arduinoConnected:
-            self.GSMotors.adjustPanPositive()
+            self.GSArduino.adjustPanPositive()
             print("adjusting pan 1 degree positive")
         else:
             print("Unable to connect to ground station motors")
@@ -167,14 +157,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def getGSLocation(self):
         if self.arduinoConnected:
-            check = self.GSMotors.warm_start()
+            check = self.GSArduino.warm_start()
             if not check:  # if the coords cannot be retrieved, return
                 print("failed to get GPS coords, please try again")
                 return
             time.sleep(.25)
 
-            GSCoords = self.GSMotors.req_GPS()
-            self.GSMotors.print_GPS()
+            GSCoords = self.GSArduino.req_GPS()
+            self.GSArduino.print_GPS()
             self.GSLat = GSCoords[0]
             self.GSLong = GSCoords[1]
             self.GSAlt = GSCoords[2]
@@ -216,7 +206,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 startingElevation = float(startingElevationStr)
                 print(startingElevation)
 
-                self.GSMotors.calibrate(startingAzimuth, startingElevation)
+                self.GSArduino.calibrate(startingAzimuth, startingElevation)
             except ValueError:
                 print("numbers only for initial azimuth and elevation")
         else:
@@ -250,9 +240,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.worker.moveToThread(self.trackThread)
 
-        # self.trackThread.started.connect(lambda: self.worker.track(self.GSMotors, self.Balloon))
         self.trackThread.started.connect(self.worker.track)
-        # self.trackThread.started.connect(self.worker.quickTest)
 
         self.worker.finished.connect(self.trackThread.quit)  # pycharm has bug, this is correct
         self.worker.finished.connect(self.worker.deleteLater)  # https://youtrack.jetbrains.com/issue/PY-24183?_ga=2.240219907.1479555738.1625151876-2014881275.1622661488
@@ -285,10 +273,10 @@ class Worker(QObject):
 
                 print("Distance " + str(distance) + " Azimuth: " + str(newAzimuth) + ", Elevation: " + str(newElevation))
 
-                MainWindow.GSMotors.move_position(newAzimuth, newElevation)
+                MainWindow.GSArduino.move_position(newAzimuth, newElevation)
 
         print("All done!")
-        self.finished.emit()
+        self.finished.emit()  # same pycharm bug as above
         return
 
 

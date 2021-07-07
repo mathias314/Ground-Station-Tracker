@@ -20,52 +20,52 @@ SOFTWARE.
 -------------------------------------------------------------------------------
 """
 
-import requests;
-import time;
+import requests
+import time
 
 
 class Balloon_Coordinates:
-    BOREALIS_EPOCH = 1357023600;
+    BOREALIS_EPOCH = 1357023600
 
     def __init__(self, imei):
 
-        self.imei = imei;
+        self.imei = imei
 
         # Grab and Define IMEI's Latest Flight
         req = requests.get("https://borealis.rci.montana.edu/meta/flights?imei={}".format(self.imei));
-        self.latest_flight = req.json()[-1];
+        self.latest_flight = req.json()[-1]
 
         # Define UID
         flightTime = int(time.mktime(time.strptime(self.latest_flight, "%Y-%m-%d")) - 21600 - Balloon_Coordinates.BOREALIS_EPOCH);
-        self.uid = (int(flightTime) << 24)|int(self.imei[8:]);
-        return;
+        self.uid = (int(flightTime) << 24)|int(self.imei[8:])
+        return
 
     
     @staticmethod
     def list_IMEI():
         # Request IMEI List
         req = requests.get('https://borealis.rci.montana.edu/meta/imeis');
-        data = req.json();
-        IMEIs = [];
+        data = req.json()
+        IMEIs = []
         
         for imei in data:
-            IMEIs.append(imei);
-        return IMEIs;
+            IMEIs.append(imei)
+        return IMEIs
 
     def get_coor_alt(self):
-        req = requests.get("https://borealis.rci.montana.edu/flight?uid={}".format(self.uid));
-        data = req.json();
+        req = requests.get("https://borealis.rci.montana.edu/flight?uid={}".format(self.uid))
+        data = req.json()
         # Lat, Long, Alt
-        self.coor_alt = [data['data'][-1][3], data['data'][-1][4], data['data'][-1][5]];
-        return self.coor_alt;
+        self.coor_alt = [data['data'][-1][3], data['data'][-1][4], data['data'][-1][5]]
+        return self.coor_alt
 
     def print_info(self):
-        self.get_coor_alt();
-        print("IMEI: ", self.imei);
-        print("Date:", self.latest_flight);
-        print("Coordinates: (", self.coor_alt[0], ", " ,self.coor_alt[1], ")");
-        print("Altitude: ", self.coor_alt[2]);
-        return;
+        self.get_coor_alt()
+        print("IMEI: ", self.imei)
+        print("Date:", self.latest_flight)
+        print("Coordinates: (", self.coor_alt[0], ", " ,self.coor_alt[1], ")")
+        print("Altitude: ", self.coor_alt[2])
+        return
 
     pass
 
