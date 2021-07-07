@@ -42,6 +42,7 @@ class trackMath:
         a = math.cos(self.gslat)*self.rgeo*math.cos(self.tlat)*math.cos(self.w)
         b = self.rgeo*math.sin(self.gslat)*math.sin(self.tlat)
         self.elev = -math.asin(-((a+b-self.rgs)/self.distance))
+
         self.elev = np.rad2deg(self.elev)
 
         if self.elev > 90:

@@ -22,7 +22,7 @@ SOFTWARE.
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer, QThread, QObject, pyqtSignal, QSortFilterProxyModel, Qt
-from PyQt5.QtWidgets import QCompleter, QComboBox
+from PyQt5.QtWidgets import QCompleter, QComboBox, QDialog, QApplication, QLineEdit, QVBoxLayout
 from designerFile import Ui_MainWindow
 import sys
 from Balloon_Coordinates import Balloon_Coordinates
@@ -33,11 +33,11 @@ import serial.tools.list_ports
 import time
 
 
-# todo: make selecting IMEI/COM port easier
 # todo: clean up code (Ground_Station_Motors)
 # todo: make window scale/look good (bigger text)
 # todo: display balloon info and calculation
 # todo: display error messages in GUI
+# todo: add large steps to manual controls
 # todo: refresh arduino list/autoconnect to arduino?, check if disconnected?
 # todo: write documentation
 
@@ -50,6 +50,7 @@ import time
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(Window, self).__init__()
+
         self.setupUi(self)
 
         self.IMEIList = Balloon_Coordinates.list_IMEI()
@@ -72,6 +73,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.GSLong = 0
         self.GSAlt = 0
 
+        self.IMEIComboBox.addItem("")
         for i in range(len(self.IMEIList)):
             self.IMEIComboBox.addItem(self.IMEIList[i])
 
@@ -81,13 +83,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.portNames.append("{}".format(port))
             i += 1
 
-        # IMEI combobox search stuff
-        # self.IMEIComboBox.setFocusPolicy(Qt.StrongFocus)
-        # self.IMEIComboBox.setEditable(True)
-        #
-        # self.pFilterModel = QSortFilterProxyModel(self)
-        # self.pFilterModel.setFilterCaseSensitivity(Qt.CaseInsensitive)
-        # self.pFilterModel.setSourceModel(self.model())
+        completer = QCompleter(self.IMEIList)
+        completer.setFilterMode(Qt.MatchContains)
+        self.IMEIComboBox.setEditable(True)
+        self.IMEIComboBox.setCompleter(completer)
 
         self.confirmIMEIButton.clicked.connect(self.assignIMEI)
 
