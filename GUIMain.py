@@ -21,7 +21,7 @@ SOFTWARE.
 """
 
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import QThread, QObject, pyqtSignal, Qt
+from PyQt5.QtCore import QThread, QObject, pyqtSignal, Qt, pyqtSlot
 from PyQt5.QtWidgets import QCompleter
 from designerFile import Ui_MainWindow
 import sys
@@ -36,7 +36,7 @@ import time
 # todo: display balloon info and calculation
 # todo: display error messages in GUI
 # todo: add large steps to manual controls
-# todo: refresh arduino list/autoconnect to arduino?, check if disconnected?
+# todo: refresh arduino list/autoconnect to arduino?, check  if disconnected?
 # todo: write documentation
 
 # todo: automatically grab initial azimuth/elevation
@@ -46,6 +46,9 @@ import time
 
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
+    # displayCalculationsSignal = pyqtSignal(float, float, float)
+    # testSignal = pyqtSignal()
+
     def __init__(self):
         super(Window, self).__init__()
 
@@ -58,6 +61,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.arduinoConnected = False
         self.IMEIAssigned = False
+        self.calibrated = False
 
         self.tracking = False
 
@@ -75,11 +79,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         for i in range(len(self.IMEIList)):
             self.IMEIComboBox.addItem(self.IMEIList[i])
 
-        i = 1
         for port, desc, hwid in sorted(self.ports):
-            self.COMPortComboBox.addItem("[{}] {}: {}".format(i, port, desc))
+            # self.COMPortComboBox.addItem("[{}] {}: {}".format(i, port, desc))
+            self.COMPortComboBox.addItem(desc)
             self.portNames.append("{}".format(port))
-            i += 1
 
         completer = QCompleter(self.IMEIList)
         completer.setFilterMode(Qt.MatchContains)
@@ -108,23 +111,31 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.IMEIAssigned = True
             self.Balloon = Balloon_Coordinates(self.IMEIList[self.IMEIComboBox.currentIndex() - 1])
             self.Balloon.print_info()
+            self.errorMessageBox.setPlainText("Balloon selected!")
         else:
             print("select a balloon ")
+            self.errorMessageBox.setPlainText("Please select a balloon IMEI")
             self.IMEIAssigned = False
         return
 
     def connectToArduino(self):
-        if not self.arduinoConnected:
+        if not self.arduinoConnected and self.COMPortComboBox.currentIndex() != 0:
             self.GSArduino = Ground_Station_Arduino(self.portNames[self.COMPortComboBox.currentIndex() - 1], 9600)
-        self.arduinoConnected = True
+            self.errorMessageBox.setPlainText("connected to arduino!")
+            self.arduinoConnected = True
+        else:
+            print("failed to connect to arduino")
+            self.errorMessageBox.setPlainText("failed to connect to arduino")
         return
 
     def tiltUp(self):
         if self.arduinoConnected:
             self.GSArduino.adjustTiltUp()
             print("adjusting tilt up 1 degree")
+            self.errorMessageBox.setPlainText("adjusting tilt up 1 degree")
         else:
             print("Unable to connect to ground station motors")
+            self.errorMessageBox.setPlainText("Not connected to ground station motors")
 
         return
 
@@ -132,26 +143,32 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.arduinoConnected:
             self.GSArduino.adjustTiltDown()
             print("adjusting tilt down 1 degree")
+            self.errorMessageBox.setPlainText("adjusting tilt down 1 degree")
         else:
             print("Unable to connect to ground station motors")
+            self.errorMessageBox.setPlainText("Not connected to ground station motors")
 
         return
 
     def panLeft(self):
         if self.arduinoConnected:
             self.GSArduino.adjustPanNegative()
-            print("adjusting pan 1 degree negative")
+            print("adjusting pan 1 degree negative (left)")
+            self.errorMessageBox.setPlainText("adjusting pan 1 degree negative")
         else:
             print("Unable to connect to ground station motors")
+            self.errorMessageBox.setPlainText("Not connected to ground station motors")
 
         return
 
     def panRight(self):
         if self.arduinoConnected:
             self.GSArduino.adjustPanPositive()
-            print("adjusting pan 1 degree positive")
+            print("adjusting pan 1 degree positive (right)")
+            self.errorMessageBox.setPlainText("adjusting pan 1 degree positive")
         else:
             print("Unable to connect to ground station motors")
+            self.errorMessageBox.setPlainText("Not connected to ground station motors")
 
         return
 
@@ -160,6 +177,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             check = self.GSArduino.warm_start()
             if not check:  # if the coords cannot be retrieved, return
                 print("failed to get GPS coords, please try again")
+                self.errorMessageBox.setPlainText("failed to get GPS coords, please try again")
                 return
             time.sleep(.25)
 
@@ -174,6 +192,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.GSAltBox.setPlainText(str(self.GSAlt))
         else:
             print("arduino not connected")
+            self.errorMessageBox.setPlainText("arduino not connected")
 
         return
 
@@ -192,8 +211,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             altStr = self.GSAltBox.toPlainText()
             self.GSAlt = float(altStr)
             print(self.GSAlt)
+
+            self.errorMessageBox.setPlainText("Ground station location entered successfully!")
         except ValueError:
             print("numbers only for GPS location")
+            self.errorMessageBox.setPlainText("invalid GPS location entered. Only enter numbers")
 
     def calibrate(self):
         if self.arduinoConnected:
@@ -207,10 +229,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 print(startingElevation)
 
                 self.GSArduino.calibrate(startingAzimuth, startingElevation)
+                self.calibrated = True
+                self.errorMessageBox.setPlainText("successfully calibrated!")
             except ValueError:
                 print("numbers only for initial azimuth and elevation")
+                self.errorMessageBox.setPlainText("invalid input for initial azimuth and elevation")
         else:
             print("not connected to arduino")
+            self.errorMessageBox.setPlainText("not connected to arduino")
 
         return
 
@@ -219,15 +245,24 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             print("Com port assigned")
         else:
             print("Com port not assigned")
+            self.errorMessageBox.setPlainText("Please connect arduino")
 
         if self.IMEIAssigned:
             print("IMEI assigned")
         else:
             print("IMEI not assigned")
+            self.errorMessageBox.setPlainText("Please select arduino")
+
+        if self.calibrated:
+            print("Calibrated!")
+        else:
+            print("starting position not set")
+            self.errorMessageBox.setPlainText("Please set staring azimuth and elevation")
 
         print("\n")
 
-        if self.arduinoConnected and self.IMEIAssigned != 0:
+        if self.arduinoConnected and self.IMEIAssigned != 0 and self.calibrated:
+            self.errorMessageBox.setPlainText("starting tracking!")
             self.track()
             return True
         else:
@@ -246,15 +281,32 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.worker.finished.connect(self.worker.deleteLater)  # https://youtrack.jetbrains.com/issue/PY-24183?_ga=2.240219907.1479555738.1625151876-2014881275.1622661488
         self.trackThread.finished.connect(self.trackThread.deleteLater)
 
+        # self.trackThread.output[float, float, float].connect(self.displayCalculations)
+
+        self.startButton.setEnabled(False)
+
         self.trackThread.start()
 
     def stopTracking(self):
         self.tracking = False
+        self.startButton.setEnabled(True)
+        self.errorMessageBox.setPlainText("tracking stopped")
+        return
+
+    def displayCalculations(self, distance, azimuth, elevation):
+        print("calling display calculations")
+        self.distanceDisplay.setPlainText(str(distance))
+        self.azimuthDisplay.setPlainText(str(azimuth))
+        self.elevationDisplay.setPlainText(str(elevation))
         return
 
 
 class Worker(QObject):
     finished = pyqtSignal()
+
+    calcSignal = pyqtSignal(float, float, float)
+
+    i = 0
 
     def track(self):
         timer = time.time() - 4
@@ -271,11 +323,23 @@ class Worker(QObject):
                 newElevation = Tracking_Calc.elevation()
                 newAzimuth = Tracking_Calc.azimuth()
 
-                print("Distance " + str(distance) + " Azimuth: " + str(newAzimuth) + ", Elevation: " + str(newElevation))
+                print(str(self.i) + " Distance " + str(distance) + " Azimuth: " + str(newAzimuth) + ", Elevation: " + str(newElevation))
+
+                # MainWindow.distanceDisplay.setPlainText(str(distance))
+                # MainWindow.azimuthDisplay.setPlainText(str(newAzimuth))
+                # MainWindow.elevationDisplay.setPlainText(str(newElevation))
+
+                # MainWindow.displayCalculations(distance, newAzimuth, newElevation)
+
+                self.calcSignal.connect(MainWindow.displayCalculations)  # this seems to happen a lot for some reason
+                self.calcSignal.emit(distance, newAzimuth, newElevation)
 
                 MainWindow.GSArduino.move_position(newAzimuth, newElevation)
 
+                self.i += 1
+
         print("All done!")
+        # MainWindow.errorMessageBox.setPlainText("all done tracking!")
         self.finished.emit()  # same pycharm bug as above
         return
 
