@@ -21,9 +21,8 @@ SOFTWARE.
 """
 
 from Balloon_Coordinates import Balloon_Coordinates
-from Ground_Station_Coordinates import Ground_Station_Coordinates
 from satelliteTrackingMath import trackMath
-from Ground_Station_Arduino import Ground_Station_Motors
+from Ground_Station_Arduino import Ground_Station_Arduino
 import serial.tools.list_ports
 import time
 import csv
@@ -51,7 +50,7 @@ for port, desc, hwid in sorted(ports):
 user_port = int(input("Choose Port: "))
 print("{}".format(portNames[user_port]))
 
-GSMotors = Ground_Station_Motors(portNames[user_port], 9600)
+GSMotors = Ground_Station_Arduino(portNames[user_port], 9600)
 
 # Initialize First Coordinate
 

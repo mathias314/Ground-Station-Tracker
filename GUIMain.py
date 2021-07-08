@@ -294,7 +294,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def displayCalculations(self, distance, azimuth, elevation):
-        print("calling display calculations")
+        # print("calling display calculations")
         self.distanceDisplay.setPlainText(str(distance))
         self.azimuthDisplay.setPlainText(str(azimuth))
         self.elevationDisplay.setPlainText(str(elevation))
