@@ -270,6 +270,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def track(self):
         self.tracking = True
+        self.errorMessageBox.setPlainText("Tracking!")
         self.trackThread = QThread()
         self.worker = Worker()
 
