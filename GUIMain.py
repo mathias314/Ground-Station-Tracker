@@ -33,17 +33,14 @@ import time
 from pylab import *
 from sunposition import sunpos
 from datetime import datetime
+import scipy  # seemingly pointless but i'd advise keeping
 
 
-# todo: make window scale/look good (bigger text)
-# todo: display balloon info and calculation
-# todo: add large steps to manual controls
+# todo: make window scale/look good (bigger text) ?
 # todo: write documentation
 
-# todo: automatically grab initial azimuth/elevation
 # todo: incorporate IMU
-# todo: predict next iridium ping
-# todo: implement map of balloon location
+# todo: predict next iridium ping!
 
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -100,10 +97,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.connectToArduinoButton.clicked.connect(self.connectToArduino)
 
-        self.bigTiltUpbutton.clicked.connect(self.bigTiltUp)
-        self.bigTiltDownButton.clicked.connect(self.bigTiltDown)
-        self.bigPanRightButton.clicked.connect(self.bigPanRight)
-        self.bigPanLeftButton.clicked.connect(self.bigPanLeft)
+        # self.bigTiltUpbutton.clicked.connect(self.bigTiltUp)
+        # self.bigTiltDownButton.clicked.connect(self.bigTiltDown)
+        # self.bigPanRightButton.clicked.connect(self.bigPanRight)
+        # self.bigPanLeftButton.clicked.connect(self.bigPanLeft)
 
         self.tiltUpButton.clicked.connect(self.tiltUp)
         self.tiltDownButton.clicked.connect(self.tiltDown)
@@ -167,9 +164,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def tiltUp(self):
         if self.arduinoConnected:
-            self.GSArduino.adjustTiltUp()
-            print("adjusting tilt up 1 degree")
-            self.errorMessageBox.setPlainText("adjusting tilt up 1 degree")
+            self.GSArduino.adjustTiltUp(self.degreesPerClickBox.currentText())
+            self.errorMessageBox.setPlainText("adjusting tilt up " + self.degreesPerClickBox.currentText() + "degrees")
         else:
             print("Unable to connect to ground station motors")
             self.errorMessageBox.setPlainText("Not connected to ground station motors")
@@ -178,9 +174,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def tiltDown(self):
         if self.arduinoConnected:
-            self.GSArduino.adjustTiltDown()
-            print("adjusting tilt down 1 degree")
-            self.errorMessageBox.setPlainText("adjusting tilt down 1 degree")
+            self.GSArduino.adjustTiltDown(self.degreesPerClickBox.currentText())
+            self.errorMessageBox.setPlainText("adjusting tilt down " + self.degreesPerClickBox.currentText() + "degrees")
         else:
             print("Unable to connect to ground station motors")
             self.errorMessageBox.setPlainText("Not connected to ground station motors")
@@ -189,9 +184,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def panLeft(self):
         if self.arduinoConnected:
-            self.GSArduino.adjustPanNegative()
-            print("adjusting pan 1 degree negative (left)")
-            self.errorMessageBox.setPlainText("adjusting pan 1 degree negative")
+            self.GSArduino.adjustPanNegative(self.degreesPerClickBox.currentText())
+            self.errorMessageBox.setPlainText("adjusting pan " + self.degreesPerClickBox.currentText() + " degrees negative")
         else:
             print("Unable to connect to ground station motors")
             self.errorMessageBox.setPlainText("Not connected to ground station motors")
@@ -200,9 +194,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def panRight(self):
         if self.arduinoConnected:
-            self.GSArduino.adjustPanPositive()
-            print("adjusting pan 1 degree positive (right)")
-            self.errorMessageBox.setPlainText("adjusting pan 1 degree positive")
+            self.GSArduino.adjustPanPositive(self.degreesPerClickBox.currentText())
+            self.errorMessageBox.setPlainText("adjusting pan " + self.degreesPerClickBox.currentText() + " degrees positive")
         else:
             print("Unable to connect to ground station motors")
             self.errorMessageBox.setPlainText("Not connected to ground station motors")
@@ -258,7 +251,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def getStartingPos(self):
         if self.GSLocationSet:
             now = datetime.utcnow()
-            az, elev = sunpos(now, self.GSLat, self.GSLong, 0)[:2]  # discard RA, dec, H
+            az, elev = sunpos(now, self.GSLat, self.GSLong, self.GSAlt)[:2]  # discard RA, dec, H
 
             self.startingAzimuth = az
             self.startingElevation = elev

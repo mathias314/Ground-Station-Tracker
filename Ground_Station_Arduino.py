@@ -42,24 +42,28 @@ class Ground_Station_Arduino:
         time.sleep(.05)
         return
 
-    def adjustTiltUp(self):
-        self.COM_Port.write(b'W')
-        print("adjusting tilt up yeehaw")
+    def adjustTiltUp(self, degrees):
+        message = "W" + str(degrees)
+        self.COM_Port.write(bytes(message, "utf-8"))
+        print(message)
         time.sleep(.05)
         return
 
-    def adjustTiltDown(self):
-        self.COM_Port.write(b'S')
+    def adjustTiltDown(self, degrees):
+        message = "S" + str(degrees)
+        self.COM_Port.write(bytes(message, "utf-8"))
         time.sleep(.05)
         return
 
-    def adjustPanPositive(self):
-        self.COM_Port.write(b'A')
+    def adjustPanPositive(self, degrees):
+        message = "A" + str(degrees)
+        self.COM_Port.write(bytes(message, "utf-8"))
         time.sleep(.05)
         return
 
-    def adjustPanNegative(self):
-        self.COM_Port.write(b'D')
+    def adjustPanNegative(self, degrees):
+        message = "D" + str(degrees)
+        self.COM_Port.write(bytes(message, "utf-8"))
         time.sleep(.05)
         return
 

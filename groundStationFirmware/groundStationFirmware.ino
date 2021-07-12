@@ -201,32 +201,36 @@ void adjustPanPos()
 {
   tic1.exitSafeStart();
 
-  tic1.setTargetPosition(119);
-  waitForPosition1(119);
+  int adjustedPos = bytes_in.substring(1).toFloat() * 119.3333;
+  tic1.setTargetPosition(adjustedPos);
+  waitForPosition1(adjustedPos);
 }
 
 void adjustPanNeg()
 {
   tic1.exitSafeStart();
-
-  tic1.setTargetPosition(-119);
-  waitForPosition1(-119);
+  
+  int adjustedPos = bytes_in.substring(1).toFloat() * 119.3333;
+  tic1.setTargetPosition(-adjustedPos);
+  waitForPosition1(-adjustedPos);
 }
 
-void adjustTiltUp()
+void adjustTiltUp(String bytes_in)
 {
   tic2.exitSafeStart();
 
-  tic2.setTargetPosition(119);
-  waitForPosition2(119);
+  int adjustedPos = bytes_in.substring(1).toFloat() * 119.3333;
+  tic2.setTargetPosition(adjustedPos);
+  waitForPosition2(adjustedPos);
 }
 
 void adjustTiltDown()
 {
   tic2.exitSafeStart();
 
-  tic2.setTargetPosition(-119);
-  waitForPosition2(-119);
+  int adjustedPos = bytes_in.substring(1).toFloat() * 119.3333;
+  tic2.setTargetPosition(-adjustedPos);
+  waitForPosition2(-adjustedPos);
 }
 
 
@@ -271,7 +275,7 @@ void loop()
     }
     else if(bytes_in[0] == 'W')
     {
-      adjustTiltUp();
+      adjustTiltUp(bytes_in);
     }
     else if(bytes_in[0] == 'S')
     {
