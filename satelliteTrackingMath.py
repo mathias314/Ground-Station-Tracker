@@ -45,7 +45,7 @@ class trackMath:
 
         self.elev = np.rad2deg(self.elev)
 
-        if self.elev > 90:
+        if self.elev > 90:  # change to while loop?
             return 90
         elif self.elev < 0:
             return 0

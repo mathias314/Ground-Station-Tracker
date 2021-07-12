@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>945</width>
-    <height>688</height>
+    <width>980</width>
+    <height>712</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,8 +43,8 @@
    <widget class="QPlainTextEdit" name="startingAzimuthBox">
     <property name="geometry">
      <rect>
-      <x>460</x>
-      <y>190</y>
+      <x>570</x>
+      <y>240</y>
       <width>251</width>
       <height>31</height>
      </rect>
@@ -53,8 +53,8 @@
    <widget class="QPlainTextEdit" name="startingElevationBox">
     <property name="geometry">
      <rect>
-      <x>460</x>
-      <y>250</y>
+      <x>570</x>
+      <y>290</y>
       <width>251</width>
       <height>31</height>
      </rect>
@@ -63,8 +63,8 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>360</x>
-      <y>190</y>
+      <x>480</x>
+      <y>250</y>
       <width>79</width>
       <height>16</height>
      </rect>
@@ -76,8 +76,8 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>360</x>
-      <y>250</y>
+      <x>470</x>
+      <y>300</y>
       <width>85</width>
       <height>16</height>
      </rect>
@@ -89,8 +89,8 @@
    <widget class="QPushButton" name="calibrateButton">
     <property name="geometry">
      <rect>
-      <x>740</x>
-      <y>260</y>
+      <x>830</x>
+      <y>290</y>
       <width>105</width>
       <height>23</height>
      </rect>
@@ -102,7 +102,7 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>410</x>
       <y>10</y>
       <width>121</width>
       <height>16</height>
@@ -115,8 +115,8 @@
    <widget class="QPlainTextEdit" name="GSLatBox">
     <property name="geometry">
      <rect>
-      <x>472</x>
-      <y>9</y>
+      <x>560</x>
+      <y>10</y>
       <width>241</width>
       <height>31</height>
      </rect>
@@ -166,10 +166,10 @@
    <widget class="QPushButton" name="tiltUpButton">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>270</y>
-      <width>75</width>
-      <height>23</height>
+      <x>170</x>
+      <y>262</y>
+      <width>81</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -179,10 +179,10 @@
    <widget class="QPushButton" name="panLeftButton">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>110</x>
       <y>300</y>
-      <width>75</width>
-      <height>23</height>
+      <width>81</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -192,10 +192,10 @@
    <widget class="QPushButton" name="panRightButton">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>230</x>
       <y>300</y>
-      <width>75</width>
-      <height>23</height>
+      <width>81</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -205,10 +205,10 @@
    <widget class="QPushButton" name="tiltDownButton">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>330</y>
-      <width>75</width>
-      <height>23</height>
+      <x>170</x>
+      <y>340</y>
+      <width>81</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -218,8 +218,8 @@
    <widget class="QPushButton" name="confirmGSLocationButton">
     <property name="geometry">
      <rect>
-      <x>750</x>
-      <y>90</y>
+      <x>830</x>
+      <y>120</y>
       <width>85</width>
       <height>23</height>
      </rect>
@@ -231,7 +231,7 @@
    <widget class="QPushButton" name="GPSRequestButton">
     <property name="geometry">
      <rect>
-      <x>740</x>
+      <x>830</x>
       <y>10</y>
       <width>107</width>
       <height>23</height>
@@ -280,7 +280,7 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>410</x>
       <y>60</y>
       <width>131</width>
       <height>20</height>
@@ -293,7 +293,7 @@
    <widget class="QPlainTextEdit" name="GSLongBox">
     <property name="geometry">
      <rect>
-      <x>470</x>
+      <x>560</x>
       <y>60</y>
       <width>241</width>
       <height>31</height>
@@ -303,7 +303,7 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>321</x>
+      <x>410</x>
       <y>110</y>
       <width>141</width>
       <height>20</height>
@@ -316,7 +316,7 @@
    <widget class="QPlainTextEdit" name="GSAltBox">
     <property name="geometry">
      <rect>
-      <x>470</x>
+      <x>560</x>
       <y>110</y>
       <width>241</width>
       <height>31</height>
@@ -326,7 +326,7 @@
    <widget class="QPlainTextEdit" name="distanceDisplay">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>560</x>
       <y>380</y>
       <width>251</width>
       <height>31</height>
@@ -336,7 +336,7 @@
    <widget class="QPlainTextEdit" name="azimuthDisplay">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>560</x>
       <y>430</y>
       <width>251</width>
       <height>31</height>
@@ -346,7 +346,7 @@
    <widget class="QPlainTextEdit" name="elevationDisplay">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>560</x>
       <y>480</y>
       <width>251</width>
       <height>31</height>
@@ -366,7 +366,7 @@
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>320</x>
+      <x>410</x>
       <y>380</y>
       <width>131</width>
       <height>21</height>
@@ -379,7 +379,7 @@
    <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
-      <x>400</x>
+      <x>490</x>
       <y>430</y>
       <width>47</width>
       <height>13</height>
@@ -392,7 +392,7 @@
    <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
-      <x>390</x>
+      <x>490</x>
       <y>490</y>
       <width>47</width>
       <height>13</height>
@@ -415,13 +415,104 @@
      <string>Status box</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="bigTiltUpbutton">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>230</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Tilt Up (big)</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="bigPanRightButton">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>300</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pan Right (big)</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="bigTiltDownButton">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>380</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Tilt Down (big)</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="bigPanLeftButton">
+    <property name="geometry">
+     <rect>
+      <x>24</x>
+      <y>300</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pan Left (big)</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="calculateStartingPosButton">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>240</y>
+      <width>141</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Calculate Starting Position</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_12">
+    <property name="geometry">
+     <rect>
+      <x>840</x>
+      <y>180</y>
+      <width>121</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>When pointed at sun,</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_13">
+    <property name="geometry">
+     <rect>
+      <x>840</x>
+      <y>200</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>click button below</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>945</width>
+     <width>980</width>
      <height>21</height>
     </rect>
    </property>

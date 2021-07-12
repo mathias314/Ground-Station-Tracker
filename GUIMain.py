@@ -30,13 +30,14 @@ from satelliteTrackingMath import trackMath
 from Ground_Station_Arduino import Ground_Station_Arduino
 import serial.tools.list_ports
 import time
+from pylab import *
+from sunposition import sunpos
+from datetime import datetime
 
 
 # todo: make window scale/look good (bigger text)
 # todo: display balloon info and calculation
-# todo: display error messages in GUI
 # todo: add large steps to manual controls
-# todo: refresh arduino list/autoconnect to arduino?, check  if disconnected?
 # todo: write documentation
 
 # todo: automatically grab initial azimuth/elevation
@@ -46,9 +47,6 @@ import time
 
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
-    # displayCalculationsSignal = pyqtSignal(float, float, float)
-    # testSignal = pyqtSignal()
-
     def __init__(self):
         super(Window, self).__init__()
 
@@ -61,6 +59,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.arduinoConnected = False
         self.IMEIAssigned = False
+        self.GSLocationSet = False
         self.calibrated = False
 
         self.tracking = False
@@ -74,6 +73,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.GSLat = 0
         self.GSLong = 0
         self.GSAlt = 0
+
+        self.startingAzimuth = 0
+        self.startingElevation = 0
 
         self.IMEIComboBox.addItem("")
         for i in range(len(self.IMEIList)):
@@ -98,10 +100,17 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.connectToArduinoButton.clicked.connect(self.connectToArduino)
 
+        self.bigTiltUpbutton.clicked.connect(self.bigTiltUp)
+        self.bigTiltDownButton.clicked.connect(self.bigTiltDown)
+        self.bigPanRightButton.clicked.connect(self.bigPanRight)
+        self.bigPanLeftButton.clicked.connect(self.bigPanLeft)
+
         self.tiltUpButton.clicked.connect(self.tiltUp)
         self.tiltDownButton.clicked.connect(self.tiltDown)
         self.panLeftButton.clicked.connect(self.panLeft)
         self.panRightButton.clicked.connect(self.panRight)
+
+        self.calculateStartingPosButton.clicked.connect(self.getStartingPos)
 
         self.startButton.clicked.connect(self.checkIfReady)
         self.stopTrackingButton.clicked.connect(self.stopTracking)
@@ -126,6 +135,34 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             print("failed to connect to arduino")
             self.errorMessageBox.setPlainText("failed to connect to arduino")
+        return
+
+    def bigTiltUp(self):
+        for _ in range(10):
+            self.tiltUp()
+            time.sleep(.25)
+
+        return
+
+    def bigTiltDown(self):
+        for _ in range(10):
+            self.tiltDown()
+            time.sleep(.25)
+
+        return
+
+    def bigPanRight(self):
+        for _ in range(10):
+            self.panRight()
+            time.sleep(.25)
+
+        return
+
+    def bigPanLeft(self):
+        for _ in range(10):
+            self.panLeft()
+            time.sleep(.25)
+
         return
 
     def tiltUp(self):
@@ -213,9 +250,27 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             print(self.GSAlt)
 
             self.errorMessageBox.setPlainText("Ground station location entered successfully!")
+            self.GSLocationSet = True
         except ValueError:
             print("numbers only for GPS location")
             self.errorMessageBox.setPlainText("invalid GPS location entered. Only enter numbers")
+
+    def getStartingPos(self):
+        if self.GSLocationSet:
+            now = datetime.utcnow()
+            az, elev = sunpos(now, self.GSLat, self.GSLong, 0)[:2]  # discard RA, dec, H
+
+            self.startingAzimuth = az
+            self.startingElevation = elev
+
+            self.startingAzimuthBox.setPlainText(str(az))
+            self.startingElevationBox.setPlainText(str(elev))
+
+        else:
+            self.errorMessageBox.setPlainText("Please set ground station location "
+                                              "and point at the sun using solar sight")
+
+        return
 
     def calibrate(self):
         if self.arduinoConnected:
@@ -282,8 +337,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.worker.finished.connect(self.worker.deleteLater)  # https://youtrack.jetbrains.com/issue/PY-24183?_ga=2.240219907.1479555738.1625151876-2014881275.1622661488
         self.trackThread.finished.connect(self.trackThread.deleteLater)
 
-        # self.trackThread.output[float, float, float].connect(self.displayCalculations)
-
         self.startButton.setEnabled(False)
 
         self.trackThread.start()
@@ -326,12 +379,6 @@ class Worker(QObject):
 
                 print(str(self.i) + " Distance " + str(distance) + " Azimuth: " + str(newAzimuth) + ", Elevation: " + str(newElevation))
 
-                # MainWindow.distanceDisplay.setPlainText(str(distance))
-                # MainWindow.azimuthDisplay.setPlainText(str(newAzimuth))
-                # MainWindow.elevationDisplay.setPlainText(str(newElevation))
-
-                # MainWindow.displayCalculations(distance, newAzimuth, newElevation)
-
                 self.calcSignal.connect(MainWindow.displayCalculations)  # this seems to happen a lot for some reason
                 self.calcSignal.emit(distance, newAzimuth, newElevation)
 
@@ -340,7 +387,6 @@ class Worker(QObject):
                 self.i += 1
 
         print("All done!")
-        # MainWindow.errorMessageBox.setPlainText("all done tracking!")
         self.finished.emit()  # same pycharm bug as above
         return
 
