@@ -124,9 +124,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.GSArduino = Ground_Station_Arduino(self.portNames[self.COMPortComboBox.currentIndex() - 1], 9600)
             self.errorMessageBox.setPlainText("connected to arduino!")
             self.arduinoConnected = True
-        else:
+        elif self.arduinoConnected:
             print("failed to connect to arduino")
-            self.errorMessageBox.setPlainText("failed to connect to arduino")
+            self.errorMessageBox.setPlainText("Arduino already connected")
+        else:
+            self.errorMessageBox.setPlainText("unable to connect to arduino")
+
         return
 
     def tiltUp(self):
