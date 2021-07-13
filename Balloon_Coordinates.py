@@ -65,7 +65,10 @@ class Balloon_Coordinates:
         print("Date:", self.latest_flight)
         print("Coordinates: (", self.coor_alt[0], ", " ,self.coor_alt[1], ")")
         print("Altitude: ", self.coor_alt[2])
-        return
+        infoStr = "IMEI: " + self.imei + " Date: " + self.latest_flight
+        infoStr += "\n" + "Coordinates: (" + str(self.coor_alt[0]) + ", " + str(self.coor_alt[1]) + ")" + " Altitude: " + str(self.coor_alt[2])
+        infoStr += "\n Balloon Selected!"
+        return infoStr
 
     pass
 

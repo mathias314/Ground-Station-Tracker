@@ -68,6 +68,7 @@ if __name__ == '__main__':
 
 if _JIT:
     try:
+        import scipy  # seemingly pointless but i'd advise keeping
         import numba
         from numba import jit
         _JIT = (numba.config.DISABLE_JIT == 0)

@@ -55,7 +55,7 @@ class Ui_MainWindow(object):
         self.connectToArduinoButton.setGeometry(QtCore.QRect(190, 130, 98, 23))
         self.connectToArduinoButton.setObjectName("connectToArduinoButton")
         self.tiltUpButton = QtWidgets.QPushButton(self.centralwidget)
-        self.tiltUpButton.setGeometry(QtCore.QRect(90, 260, 81, 31))
+        self.tiltUpButton.setGeometry(QtCore.QRect(80, 260, 81, 31))
         self.tiltUpButton.setObjectName("tiltUpButton")
         self.panLeftButton = QtWidgets.QPushButton(self.centralwidget)
         self.panLeftButton.setGeometry(QtCore.QRect(10, 300, 81, 31))

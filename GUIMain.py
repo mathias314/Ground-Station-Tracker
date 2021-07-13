@@ -33,7 +33,6 @@ import time
 from pylab import *
 from sunposition import sunpos
 from datetime import datetime
-import scipy  # seemingly pointless but i'd advise keeping
 
 
 # todo: make window scale/look good (bigger text) ?
@@ -97,11 +96,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.connectToArduinoButton.clicked.connect(self.connectToArduino)
 
-        # self.bigTiltUpbutton.clicked.connect(self.bigTiltUp)
-        # self.bigTiltDownButton.clicked.connect(self.bigTiltDown)
-        # self.bigPanRightButton.clicked.connect(self.bigPanRight)
-        # self.bigPanLeftButton.clicked.connect(self.bigPanLeft)
-
+        self.degreesPerClickBox.setCurrentIndex(1)
         self.tiltUpButton.clicked.connect(self.tiltUp)
         self.tiltDownButton.clicked.connect(self.tiltDown)
         self.panLeftButton.clicked.connect(self.panLeft)
@@ -116,8 +111,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.IMEIComboBox.currentIndex() != 0:
             self.IMEIAssigned = True
             self.Balloon = Balloon_Coordinates(self.IMEIList[self.IMEIComboBox.currentIndex() - 1])
-            self.Balloon.print_info()
-            self.errorMessageBox.setPlainText("Balloon selected!")
+            testStr = self.Balloon.print_info()
+            self.errorMessageBox.setPlainText(testStr)
         else:
             print("select a balloon ")
             self.errorMessageBox.setPlainText("Please select a balloon IMEI")
@@ -132,34 +127,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             print("failed to connect to arduino")
             self.errorMessageBox.setPlainText("failed to connect to arduino")
-        return
-
-    def bigTiltUp(self):
-        for _ in range(10):
-            self.tiltUp()
-            time.sleep(.25)
-
-        return
-
-    def bigTiltDown(self):
-        for _ in range(10):
-            self.tiltDown()
-            time.sleep(.25)
-
-        return
-
-    def bigPanRight(self):
-        for _ in range(10):
-            self.panRight()
-            time.sleep(.25)
-
-        return
-
-    def bigPanLeft(self):
-        for _ in range(10):
-            self.panLeft()
-            time.sleep(.25)
-
         return
 
     def tiltUp(self):
@@ -331,12 +298,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.trackThread.finished.connect(self.trackThread.deleteLater)
 
         self.startButton.setEnabled(False)
+        self.calibrateButton.setEnabled(False)
 
         self.trackThread.start()
 
     def stopTracking(self):
         self.tracking = False
         self.startButton.setEnabled(True)
+        self.calibrateButton.setEnabled(True)
         self.errorMessageBox.setPlainText("tracking stopped")
         return
 

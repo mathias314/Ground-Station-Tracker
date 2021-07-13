@@ -166,7 +166,7 @@
    <widget class="QPushButton" name="tiltUpButton">
     <property name="geometry">
      <rect>
-      <x>90</x>
+      <x>80</x>
       <y>260</y>
       <width>81</width>
       <height>31</height>
