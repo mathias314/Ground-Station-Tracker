@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>start tracking</string>
+     <string>Start Tracking</string>
     </property>
    </widget>
    <widget class="QPushButton" name="stopTrackingButton">
@@ -497,25 +497,6 @@
      <string>Degrees per Click</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_15">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>500</y>
-      <width>211</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap>MSGC.png</pixmap>
-    </property>
-    <property name="scaledContents">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_16">
     <property name="geometry">
      <rect>
@@ -527,6 +508,25 @@
     </property>
     <property name="text">
      <string>Who's your daddy?</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_15">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>500</y>
+      <width>181</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>msgc_logo_forGUI.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>

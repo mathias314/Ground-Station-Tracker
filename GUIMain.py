@@ -128,14 +128,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             print("failed to connect to arduino")
             self.errorMessageBox.setPlainText("Arduino already connected")
         else:
-            self.errorMessageBox.setPlainText("unable to connect to arduino")
+            self.errorMessageBox.setPlainText("Unable to connect to arduino")
 
         return
 
     def tiltUp(self):
         if self.arduinoConnected:
             self.GSArduino.adjustTiltUp(self.degreesPerClickBox.currentText())
-            self.errorMessageBox.setPlainText("adjusting tilt up " + self.degreesPerClickBox.currentText() + "degrees")
+            self.errorMessageBox.setPlainText("adjusting tilt up " + self.degreesPerClickBox.currentText() + " degrees")
         else:
             print("Unable to connect to ground station motors")
             self.errorMessageBox.setPlainText("Not connected to ground station motors")
@@ -145,7 +145,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def tiltDown(self):
         if self.arduinoConnected:
             self.GSArduino.adjustTiltDown(self.degreesPerClickBox.currentText())
-            self.errorMessageBox.setPlainText("adjusting tilt down " + self.degreesPerClickBox.currentText() + "degrees")
+            self.errorMessageBox.setPlainText("adjusting tilt down " + self.degreesPerClickBox.currentText() + " degrees")
         else:
             print("Unable to connect to ground station motors")
             self.errorMessageBox.setPlainText("Not connected to ground station motors")
@@ -176,8 +176,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.arduinoConnected:
             check = self.GSArduino.warm_start()
             if not check:  # if the coords cannot be retrieved, return
-                print("failed to get GPS coords, please try again")
-                self.errorMessageBox.setPlainText("failed to get GPS coords, please try again")
+                print("Failed to get GPS coords, please try again")
+                self.errorMessageBox.setPlainText("Failed to get GPS coords, please try again")
                 return
             time.sleep(.25)
 
