@@ -501,7 +501,7 @@
     <property name="geometry">
      <rect>
       <x>60</x>
-      <y>470</y>
+      <y>540</y>
       <width>111</width>
       <height>20</height>
      </rect>
@@ -529,6 +529,46 @@
      <bool>true</bool>
     </property>
    </widget>
+   <zorder>label_16</zorder>
+   <zorder>startButton</zorder>
+   <zorder>stopTrackingButton</zorder>
+   <zorder>startingAzimuthBox</zorder>
+   <zorder>startingElevationBox</zorder>
+   <zorder>label_4</zorder>
+   <zorder>label_5</zorder>
+   <zorder>calibrateButton</zorder>
+   <zorder>label</zorder>
+   <zorder>GSLatBox</zorder>
+   <zorder>label_7</zorder>
+   <zorder>COMPortComboBox</zorder>
+   <zorder>connectToArduinoButton</zorder>
+   <zorder>tiltUpButton</zorder>
+   <zorder>panLeftButton</zorder>
+   <zorder>panRightButton</zorder>
+   <zorder>tiltDownButton</zorder>
+   <zorder>confirmGSLocationButton</zorder>
+   <zorder>GPSRequestButton</zorder>
+   <zorder>IMEIComboBox</zorder>
+   <zorder>confirmIMEIButton</zorder>
+   <zorder>label_6</zorder>
+   <zorder>label_2</zorder>
+   <zorder>GSLongBox</zorder>
+   <zorder>label_3</zorder>
+   <zorder>GSAltBox</zorder>
+   <zorder>distanceDisplay</zorder>
+   <zorder>azimuthDisplay</zorder>
+   <zorder>elevationDisplay</zorder>
+   <zorder>errorMessageBox</zorder>
+   <zorder>label_8</zorder>
+   <zorder>label_9</zorder>
+   <zorder>label_10</zorder>
+   <zorder>label_11</zorder>
+   <zorder>calculateStartingPosButton</zorder>
+   <zorder>label_12</zorder>
+   <zorder>label_13</zorder>
+   <zorder>degreesPerClickBox</zorder>
+   <zorder>label_14</zorder>
+   <zorder>label_15</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
