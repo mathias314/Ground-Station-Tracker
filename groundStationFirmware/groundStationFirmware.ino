@@ -171,7 +171,7 @@ int movePan()
 
   float delta = newAzimuth - oldAzimuth;
 
-  return int(119.33333 * delta);
+  return int(-119.33333 * delta); // needs to be negative due to wiring
 }
 
 int moveTilt()
@@ -180,7 +180,7 @@ int moveTilt()
 
   float delta = newElevation - oldElevation;
 
-  return int(119.33333 * delta);
+  return int(119.33333 * delta); 
 }
 
 void calibrate(String bytes_in)

@@ -99,8 +99,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.degreesPerClickBox.setCurrentIndex(1)
         self.tiltUpButton.clicked.connect(self.tiltUp)
         self.tiltDownButton.clicked.connect(self.tiltDown)
-        self.panLeftButton.clicked.connect(self.panLeft)
-        self.panRightButton.clicked.connect(self.panRight)
+        self.panCounterClockwiseButton.clicked.connect(self.panClockwise)
+        self.panClockwiseButton.clicked.connect(self.panCounterClockwise)
 
         self.calculateStartingPosButton.clicked.connect(self.getStartingPos)
 
@@ -152,7 +152,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         return
 
-    def panLeft(self):
+    def panCounterClockwise(self):
         if self.arduinoConnected:
             self.GSArduino.adjustPanNegative(self.degreesPerClickBox.currentText())
             self.errorMessageBox.setPlainText("adjusting pan " + self.degreesPerClickBox.currentText() + " degrees negative")
@@ -162,7 +162,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         return
 
-    def panRight(self):
+    def panClockwise(self):
         if self.arduinoConnected:
             self.GSArduino.adjustPanPositive(self.degreesPerClickBox.currentText())
             self.errorMessageBox.setPlainText("adjusting pan " + self.degreesPerClickBox.currentText() + " degrees positive")
