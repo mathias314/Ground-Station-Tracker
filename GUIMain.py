@@ -48,6 +48,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.setupUi(self)
 
+        self.showFullScreen()
+        self.showMaximized()  # tricking qt into not cutting off bottom part of screen (i hope)
+
         self.IMEIList = Balloon_Coordinates.list_IMEI()
 
         self.ports = serial.tools.list_ports.comports()
@@ -77,10 +80,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         for i in range(len(self.IMEIList)):
             self.IMEIComboBox.addItem(self.IMEIList[i])
 
+        comPortCounter = 0
         for port, desc, hwid in sorted(self.ports):
             # self.COMPortComboBox.addItem("[{}] {}: {}".format(i, port, desc))
             self.COMPortComboBox.addItem(desc)
             self.portNames.append("{}".format(port))
+            comPortCounter += 1
 
         completer = QCompleter(self.IMEIList)
         completer.setFilterMode(Qt.MatchContains)
@@ -97,6 +102,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.connectToArduinoButton.clicked.connect(self.connectToArduino)
 
         self.degreesPerClickBox.setCurrentIndex(1)
+        self.COMPortComboBox.setCurrentIndex(comPortCounter - 1)
         self.tiltUpButton.clicked.connect(self.tiltUp)
         self.tiltDownButton.clicked.connect(self.tiltDown)
         self.panCounterClockwiseButton.clicked.connect(self.panClockwise)
