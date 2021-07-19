@@ -48,7 +48,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.setupUi(self)
 
-        self.showFullScreen()
+        # self.showFullScreen()
         self.showMaximized()  # tricking qt into not cutting off bottom part of screen (i hope)
 
         self.IMEIList = Balloon_Coordinates.list_IMEI()
