@@ -7,288 +7,503 @@
     <x>0</x>
     <y>0</y>
     <width>980</width>
-    <height>920</height>
+    <height>633</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="14" column="4">
-     <widget class="QLabel" name="label_11">
-      <property name="text">
-       <string>Status box</string>
-      </property>
-     </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>10</y>
+      <width>121</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ground Station Latitude: </string>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="GSLatBox">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>10</y>
+      <width>311</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>9</x>
+      <y>9</y>
+      <width>127</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Enter or Select IMEI below</string>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="GSLongBox">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>50</y>
+      <width>311</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="IMEIComboBox">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>50</y>
+      <width>141</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>60</y>
+      <width>126</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ground Station Longitude:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>110</y>
+      <width>141</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Select Arduino from list below</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>100</y>
+      <width>135</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ground Station Altitude (m):</string>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="GSAltBox">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>90</y>
+      <width>311</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="COMPortComboBox">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>140</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>com port</string>
+     </property>
     </item>
-    <item row="14" column="5" colspan="2">
-     <widget class="QPlainTextEdit" name="errorMessageBox"/>
+   </widget>
+   <widget class="QPlainTextEdit" name="distanceDisplay">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>300</y>
+      <width>301</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_9">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>360</y>
+      <width>42</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Azimuth:</string>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="azimuthDisplay">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>350</y>
+      <width>301</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_10">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>410</y>
+      <width>48</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Elevation:</string>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="elevationDisplay">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>400</y>
+      <width>301</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>310</y>
+      <width>129</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Line of Sight Distance (m): </string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_14">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>200</y>
+      <width>83</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Degrees per Click</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_15">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>440</y>
+      <width>231</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>msgc_logo_forGUI.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="degreesPerClickBox">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>230</y>
+      <width>38</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>.5</string>
+     </property>
     </item>
-    <item row="14" column="3">
-     <widget class="QPushButton" name="stopTrackingButton">
-      <property name="text">
-       <string>Stop Tracking</string>
-      </property>
-     </widget>
+    <item>
+     <property name="text">
+      <string>1</string>
+     </property>
     </item>
-    <item row="13" column="3">
-     <widget class="QPushButton" name="startButton">
-      <property name="text">
-       <string>Start Tracking</string>
-      </property>
-     </widget>
+    <item>
+     <property name="text">
+      <string>5</string>
+     </property>
     </item>
-    <item row="0" column="7">
-     <widget class="QPushButton" name="GPSRequestButton">
-      <property name="text">
-       <string>Request GPS Coords</string>
-      </property>
-     </widget>
+    <item>
+     <property name="text">
+      <string>10</string>
+     </property>
     </item>
-    <item row="0" column="4" colspan="2">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Ground Station Latitude: </string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="6">
-     <widget class="QPlainTextEdit" name="GSLatBox"/>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_6">
-      <property name="text">
-       <string>Enter or Select IMEI below</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="6">
-     <widget class="QPlainTextEdit" name="GSLongBox"/>
-    </item>
-    <item row="1" column="0">
-     <widget class="QComboBox" name="IMEIComboBox"/>
-    </item>
-    <item row="1" column="4" colspan="2">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>Ground Station Longitude:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_7">
-      <property name="text">
-       <string>Select Arduino from list below</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="4" rowspan="2" colspan="2">
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>Ground Station Altitude (m):</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="6" rowspan="3">
-     <widget class="QPlainTextEdit" name="GSAltBox"/>
-    </item>
-    <item row="3" column="7" rowspan="2">
-     <widget class="QPushButton" name="confirmGSLocationButton">
-      <property name="text">
-       <string>Set Coordinates</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0">
-     <widget class="QComboBox" name="COMPortComboBox">
-      <item>
-       <property name="text">
-        <string>com port</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="5" column="7">
-     <widget class="QLabel" name="label_12">
-      <property name="text">
-       <string>When pointed at sun,</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="6">
-     <widget class="QPlainTextEdit" name="startingAzimuthBox"/>
-    </item>
-    <item row="9" column="6">
-     <widget class="QPlainTextEdit" name="startingElevationBox"/>
-    </item>
-    <item row="10" column="6">
-     <widget class="QPlainTextEdit" name="distanceDisplay"/>
-    </item>
-    <item row="11" column="5">
-     <widget class="QLabel" name="label_9">
-      <property name="text">
-       <string>Azimuth:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="7">
-     <widget class="QLabel" name="label_13">
-      <property name="text">
-       <string>click button below</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="7">
-     <widget class="QPushButton" name="calculateStartingPosButton">
-      <property name="text">
-       <string>Calculate Starting Position</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="5">
-     <widget class="QLabel" name="label_4">
-      <property name="text">
-       <string>Starting Azimuth:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="7">
-     <widget class="QPushButton" name="calibrateButton">
-      <property name="text">
-       <string>Set Starting Position</string>
-      </property>
-     </widget>
-    </item>
-    <item row="11" column="6">
-     <widget class="QPlainTextEdit" name="azimuthDisplay"/>
-    </item>
-    <item row="9" column="5">
-     <widget class="QLabel" name="label_5">
-      <property name="text">
-       <string>Starting Elevation:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="12" column="0" colspan="2">
-     <widget class="QLabel" name="label_16">
-      <property name="text">
-       <string>Who's your dad?</string>
-      </property>
-     </widget>
-    </item>
-    <item row="12" column="5">
-     <widget class="QLabel" name="label_10">
-      <property name="text">
-       <string>Elevation:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="12" column="6">
-     <widget class="QPlainTextEdit" name="elevationDisplay"/>
-    </item>
-    <item row="10" column="4" colspan="2">
-     <widget class="QLabel" name="label_8">
-      <property name="text">
-       <string>Line of Sight Distance (m): </string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="3">
-     <widget class="QLabel" name="label_14">
-      <property name="text">
-       <string>Degrees per Click</string>
-      </property>
-     </widget>
-    </item>
-    <item row="13" column="0" rowspan="2" colspan="3">
-     <widget class="QLabel" name="label_15">
-      <property name="text">
-       <string/>
-      </property>
-      <property name="pixmap">
-       <pixmap>msgc_logo_forGUI.png</pixmap>
-      </property>
-      <property name="scaledContents">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="3">
-     <widget class="QComboBox" name="degreesPerClickBox">
-      <item>
-       <property name="text">
-        <string>.5</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>1</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>5</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>10</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QPushButton" name="confirmIMEIButton">
-      <property name="text">
-       <string>Confirm IMEI</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QPushButton" name="connectToArduinoButton">
-      <property name="text">
-       <string>Connect to Arduino</string>
-      </property>
-     </widget>
-    </item>
-    <item row="10" column="0" colspan="3">
-     <widget class="QPushButton" name="tiltDownButton">
-      <property name="text">
-       <string>Tilt Down</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="0" colspan="3">
-     <widget class="QPushButton" name="tiltUpButton">
-      <property name="text">
-       <string>Tilt Up</string>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="0">
-     <widget class="QPushButton" name="panCounterClockwiseButton">
-      <property name="text">
-       <string>Pan Counter-Clockwise</string>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="1" colspan="2">
-     <widget class="QPushButton" name="panClockwiseButton">
-      <property name="text">
-       <string>Pan Clockwise</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-   <zorder>label_16</zorder>
-   <zorder>startButton</zorder>
-   <zorder>stopTrackingButton</zorder>
-   <zorder>startingAzimuthBox</zorder>
-   <zorder>startingElevationBox</zorder>
-   <zorder>label_4</zorder>
-   <zorder>label_5</zorder>
-   <zorder>calibrateButton</zorder>
+   </widget>
+   <widget class="QPushButton" name="confirmIMEIButton">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>50</y>
+      <width>101</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Confirm IMEI</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="connectToArduinoButton">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>140</y>
+      <width>101</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Connect to Arduino</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="tiltDownButton">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>340</y>
+      <width>121</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Tilt Down</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="tiltUpButton">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>260</y>
+      <width>121</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Tilt Up</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="panCounterClockwiseButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>300</y>
+      <width>121</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pan Counter-Clockwise</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="panClockwiseButton">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>300</y>
+      <width>111</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pan Clockwise</string>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="startingElevationBox">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>210</y>
+      <width>301</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>220</y>
+      <width>89</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Starting Elevation:</string>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="startingAzimuthBox">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>160</y>
+      <width>301</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>170</y>
+      <width>83</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Starting Azimuth:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="GPSRequestButton">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>10</y>
+      <width>107</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Request GPS Coords</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="confirmGSLocationButton">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>90</y>
+      <width>85</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set Coordinates</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_12">
+    <property name="geometry">
+     <rect>
+      <x>840</x>
+      <y>160</y>
+      <width>100</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>When pointed at sun
+ click button below</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="calculateStartingPosButton">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>190</y>
+      <width>133</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Calculate Starting Position</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="calibrateButton">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>220</y>
+      <width>131</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set Starting Position</string>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="errorMessageBox">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>470</y>
+      <width>319</width>
+      <height>71</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="startButton">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>450</y>
+      <width>91</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Start Tracking</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="stopTrackingButton">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>500</y>
+      <width>91</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Stop Tracking</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>490</y>
+      <width>52</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Status box</string>
+    </property>
+   </widget>
    <zorder>label</zorder>
    <zorder>GSLatBox</zorder>
    <zorder>label_7</zorder>
@@ -297,8 +512,6 @@
    <zorder>panCounterClockwiseButton</zorder>
    <zorder>panClockwiseButton</zorder>
    <zorder>tiltDownButton</zorder>
-   <zorder>confirmGSLocationButton</zorder>
-   <zorder>GPSRequestButton</zorder>
    <zorder>IMEIComboBox</zorder>
    <zorder>label_6</zorder>
    <zorder>label_2</zorder>
@@ -308,19 +521,27 @@
    <zorder>distanceDisplay</zorder>
    <zorder>azimuthDisplay</zorder>
    <zorder>elevationDisplay</zorder>
-   <zorder>errorMessageBox</zorder>
    <zorder>label_8</zorder>
    <zorder>label_9</zorder>
    <zorder>label_10</zorder>
-   <zorder>label_11</zorder>
-   <zorder>calculateStartingPosButton</zorder>
-   <zorder>label_12</zorder>
-   <zorder>label_13</zorder>
    <zorder>degreesPerClickBox</zorder>
    <zorder>label_14</zorder>
    <zorder>label_15</zorder>
    <zorder>confirmIMEIButton</zorder>
    <zorder>connectToArduinoButton</zorder>
+   <zorder>startingElevationBox</zorder>
+   <zorder>label_5</zorder>
+   <zorder>startingAzimuthBox</zorder>
+   <zorder>label_4</zorder>
+   <zorder>GPSRequestButton</zorder>
+   <zorder>confirmGSLocationButton</zorder>
+   <zorder>label_12</zorder>
+   <zorder>calculateStartingPosButton</zorder>
+   <zorder>calibrateButton</zorder>
+   <zorder>errorMessageBox</zorder>
+   <zorder>startButton</zorder>
+   <zorder>stopTrackingButton</zorder>
+   <zorder>label_11</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

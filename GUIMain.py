@@ -105,7 +105,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.calculateStartingPosButton.clicked.connect(self.getStartingPos)
 
         self.startButton.clicked.connect(self.checkIfReady)
-        self.stopTrackingButton.clicked.connect(self.stopTracking)
+        self.stopButton.clicked.connect(self.stopTracking)
 
     def assignIMEI(self):
         if self.IMEIComboBox.currentIndex() != 0:
@@ -121,7 +121,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def connectToArduino(self):
         if not self.arduinoConnected and self.COMPortComboBox.currentIndex() != 0:
-            self.GSArduino = Ground_Station_Arduino(self.portNames[self.COMPortComboBox.currentIndex() - 1], 9600)
+            self.GSArduino = Ground_Station_Arduino(self.portNames[self.COMPortComboBox.currentIndex()], 9600)
             self.errorMessageBox.setPlainText("connected to arduino!")
             self.arduinoConnected = True
         elif self.arduinoConnected:
