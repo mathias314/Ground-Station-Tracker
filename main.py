@@ -22,7 +22,7 @@ SOFTWARE.
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, Qt, pyqtSlot
-from PyQt5.QtWidgets import QCompleter
+from PyQt5.QtWidgets import QCompleter, QApplication
 from designerFile import Ui_MainWindow
 import sys
 from Balloon_Coordinates import Balloon_Coordinates
@@ -35,9 +35,6 @@ from sunposition import sunpos
 from datetime import datetime
 
 
-# todo: make window scale/look good (bigger text) ?
-# todo: write documentation
-
 # todo: incorporate IMU
 # todo: predict next iridium ping!
 
@@ -49,7 +46,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         # self.showFullScreen()
-        self.showMaximized()  # tricking qt into not cutting off bottom part of screen (i hope)
+        self.showMaximized()
 
         self.IMEIList = Balloon_Coordinates.list_IMEI()
 
@@ -112,6 +109,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.startButton.clicked.connect(self.checkIfReady)
         self.stopButton.clicked.connect(self.stopTracking)
+
+        font = self.font()
+        font.setPointSize(11)  # can adjust for sizing
+        QApplication.instance().setFont(font)
 
     def assignIMEI(self):
         if self.IMEIComboBox.currentIndex() != 0:
@@ -265,31 +266,39 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def checkIfReady(self):
-        if self.arduinoConnected:
-            print("Com port assigned")
-        else:
-            print("Com port not assigned")
-            self.errorMessageBox.setPlainText("Please connect arduino")
-
-        if self.IMEIAssigned:
-            print("IMEI assigned")
-        else:
-            print("IMEI not assigned")
-            self.errorMessageBox.setPlainText("Please select arduino")
-
         if self.calibrated:
             print("Calibrated!")
         else:
             print("starting position not set")
             self.errorMessageBox.setPlainText("Please set staring azimuth and elevation")
 
+        if self.GSLocationSet:
+            print("Ground station location set!")
+        else:
+            print("Ground Station Location not assigned")
+            self.errorMessageBox.setPlainText("Ground Station location not assigned")
+
+        if self.IMEIAssigned:
+            print("IMEI assigned")
+        else:
+            print("IMEI not assigned")
+            self.errorMessageBox.setPlainText("Please select a balloon")
+
+        if self.arduinoConnected:
+            print("Arduino connected!")
+        else:
+            print("Please connect to the Arduino")
+            self.errorMessageBox.setPlainText("Please connect to the Arduino")
+
         print("\n")
 
-        if self.arduinoConnected and self.IMEIAssigned != 0 and self.calibrated:
+        if self.arduinoConnected and self.IMEIAssigned and self.calibrated and self.GSLocationSet:
             self.errorMessageBox.setPlainText("starting tracking!")
+            print("starting tracking!")
             self.track()
             return True
         else:
+            print("not ready to track yet")
             return False
 
     def track(self):
