@@ -114,6 +114,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         font.setPointSize(11)  # can adjust for sizing
         QApplication.instance().setFont(font)
 
+        # self.predictingTrack = False
+
     def assignIMEI(self):
         if self.IMEIComboBox.currentIndex() != 0:
             self.IMEIAssigned = True
@@ -369,6 +371,35 @@ class Worker(QObject):
         print("All done!")
         self.finished.emit()  # same pycharm bug as above
         return
+
+    # check for new location from server
+    # if the new location is still the same, go to prediction
+    # if there is new location, go to that latest location
+
+    # find the difference between the latest lat/long location and the one before the last one and time
+    # using last vertical velocity/altitude, find difference between altitudes/new altitude after ~1 second
+    # find the amount that the position is changing each ~second
+    # input the new predicted lat/long/alt into math equations to get new azimuth/elevation
+    # go to the predicted elevation/azimuth
+
+    # def predictTrack(self):
+    #     timer = time.time()
+    #     lastRealPing = MainWindow.Balloon.get_coor_alt()
+    #     while MainWindow.predictingTrack:
+    #         if (time.time() - timer) > 5:
+    #             timer = time.time()
+    #             Balloon_Coor = MainWindow.Balloon.get_coor_alt()
+    #
+    #             if Balloon_Coor == lastRealPing:
+    #                 # need to predict!
+    #             else:
+    #                 # go to the new actual spot
+    #
+    #             # note that trackMath takes arguments as long, lat, altitude
+    #             Tracking_Calc = trackMath(MainWindow.GSLong, MainWindow.GSLat, MainWindow.GSAlt, Balloon_Coor[1],
+    #                                       Balloon_Coor[0], Balloon_Coor[2])
+    #
+    #     return
 
 
 if __name__ == "__main__":

@@ -32,11 +32,11 @@ class Balloon_Coordinates:
         self.imei = imei
 
         # Grab and Define IMEI's Latest Flight
-        req = requests.get("https://borealis.rci.montana.edu/meta/flights?imei={}".format(self.imei));
+        req = requests.get("https://borealis.rci.montana.edu/meta/flights?imei={}".format(self.imei))
         self.latest_flight = req.json()[-1]
 
         # Define UID
-        flightTime = int(time.mktime(time.strptime(self.latest_flight, "%Y-%m-%d")) - 21600 - Balloon_Coordinates.BOREALIS_EPOCH);
+        flightTime = int(time.mktime(time.strptime(self.latest_flight, "%Y-%m-%d")) - 21600 - Balloon_Coordinates.BOREALIS_EPOCH)
         self.uid = (int(flightTime) << 24)|int(self.imei[8:])
         return
 
@@ -65,6 +65,7 @@ class Balloon_Coordinates:
         print("Date:", self.latest_flight)
         print("Coordinates: (", self.coor_alt[0], ", " ,self.coor_alt[1], ")")
         print("Altitude: ", self.coor_alt[2])
+
         infoStr = "IMEI: " + self.imei + " Date: " + self.latest_flight
         infoStr += "\n" + "Coordinates: (" + str(self.coor_alt[0]) + ", " + str(self.coor_alt[1]) + ")" + " Altitude: " + str(self.coor_alt[2])
         infoStr += "\n Balloon Selected!"
