@@ -44,7 +44,7 @@ class Balloon_Coordinates:
     @staticmethod
     def list_IMEI():
         # Request IMEI List
-        req = requests.get('https://borealis.rci.montana.edu/meta/imeis');
+        req = requests.get('https://borealis.rci.montana.edu/meta/imeis')
         data = req.json()
         IMEIs = []
         
@@ -71,8 +71,26 @@ class Balloon_Coordinates:
         infoStr += "\n Balloon Selected!"
         return infoStr
 
+    # -----------------------------------------------------------------------------------------------------------------#
+    def getOldLocation(self):
+        req = requests.get("https://borealis.rci.montana.edu/flight?uid={}".format(self.uid))
+        data = req.json()
+
+        oldLocation = [data['data'][-2][3], data['data'][-2][4], data['data'][-2][5]]
+
+        for _ in oldLocation:
+            print(_)
+
+        return oldLocation
+
+    def getTimeDiff(self):
+        req = requests.get("https://borealis.rci.montana.edu/flight?uid={}".format(self.uid))
+        data = req.json()
+
+        lastTime = [data['data'][-1][2], data['data'][-2][2]]
+
+        print(lastTime[0] - lastTime[1])
+        # return lastTime[0] - lastTime[1]
+        return lastTime[0] - lastTime[1]
+
     pass
-
-
-
-

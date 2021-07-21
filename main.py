@@ -33,6 +33,7 @@ import time
 from pylab import *
 from sunposition import sunpos
 from datetime import datetime
+import csv
 
 
 # todo: incorporate IMU
@@ -45,7 +46,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.setupUi(self)
 
-        # self.showFullScreen()
+        self.showFullScreen()
         self.showMaximized()
 
         self.IMEIList = Balloon_Coordinates.list_IMEI()
@@ -110,11 +111,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.startButton.clicked.connect(self.checkIfReady)
         self.stopButton.clicked.connect(self.stopTracking)
 
+        self.predictionStartButton.clicked.connect(self.setPredictTrack)
+
         font = self.font()
         font.setPointSize(11)  # can adjust for sizing
         QApplication.instance().setFont(font)
 
-        # self.predictingTrack = False
+        self.predictingTrack = False
 
     def assignIMEI(self):
         if self.IMEIComboBox.currentIndex() != 0:
@@ -122,6 +125,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.Balloon = Balloon_Coordinates(self.IMEIList[self.IMEIComboBox.currentIndex() - 1])
             testStr = self.Balloon.print_info()
             self.errorMessageBox.setPlainText(testStr)
+            self.Balloon.getTimeDiff()
         else:
             print("select a balloon ")
             self.errorMessageBox.setPlainText("Please select a balloon IMEI")
@@ -267,6 +271,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         return
 
+    def setPredictTrack(self):
+        self.predictingTrack = True
+        self.checkIfReady()
+        return
+
     def checkIfReady(self):
         if self.calibrated:
             print("Calibrated!")
@@ -295,10 +304,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         print("\n")
 
         if self.arduinoConnected and self.IMEIAssigned and self.calibrated and self.GSLocationSet:
-            self.errorMessageBox.setPlainText("starting tracking!")
-            print("starting tracking!")
-            self.track()
-            return True
+            if self.predictingTrack:
+                self.errorMessageBox.setPlainText("Starting tracking with predictions!")
+                self.predictTrack()
+            else:
+                self.errorMessageBox.setPlainText("starting tracking!")
+                print("starting tracking!")
+                self.track()
+                return True
         else:
             print("not ready to track yet")
             return False
@@ -322,10 +335,30 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.trackThread.start()
 
+    def predictTrack(self):
+        self.tracking = True
+        self.errorMessageBox.setPlainText("Tracking with predictions!")
+        self.trackThread = QThread()
+        self.worker = Worker()
+
+        self.worker.moveToThread(self.trackThread)
+
+        self.trackThread.started.connect(self.worker.predictTrack)
+
+        self.worker.finished.connect(self.trackThread.quit)  # pycharm has bug, this is correct
+        self.worker.finished.connect(self.worker.deleteLater)  # https://youtrack.jetbrains.com/issue/PY-24183?_ga=2.240219907.1479555738.1625151876-2014881275.1622661488
+        self.trackThread.finished.connect(self.trackThread.deleteLater)
+
+        self.startButton.setEnabled(False)
+        self.calibrateButton.setEnabled(False)
+
+        self.trackThread.start()
+
     def stopTracking(self):
         self.tracking = False
         self.startButton.setEnabled(True)
         self.calibrateButton.setEnabled(True)
+        self.predictingTrack = False
         self.errorMessageBox.setPlainText("tracking stopped")
         return
 
@@ -382,24 +415,80 @@ class Worker(QObject):
     # input the new predicted lat/long/alt into math equations to get new azimuth/elevation
     # go to the predicted elevation/azimuth
 
-    # def predictTrack(self):
-    #     timer = time.time()
-    #     lastRealPing = MainWindow.Balloon.get_coor_alt()
-    #     while MainWindow.predictingTrack:
-    #         if (time.time() - timer) > 5:
-    #             timer = time.time()
-    #             Balloon_Coor = MainWindow.Balloon.get_coor_alt()
-    #
-    #             if Balloon_Coor == lastRealPing:
-    #                 # need to predict!
-    #             else:
-    #                 # go to the new actual spot
-    #
-    #             # note that trackMath takes arguments as long, lat, altitude
-    #             Tracking_Calc = trackMath(MainWindow.GSLong, MainWindow.GSLat, MainWindow.GSAlt, Balloon_Coor[1],
-    #                                       Balloon_Coor[0], Balloon_Coor[2])
-    #
-    #     return
+    def predictTrack(self):
+        print("In predictTrack")
+        timer = time.time()
+        newestLocation = MainWindow.Balloon.get_coor_alt()
+        oldLocation = MainWindow.Balloon.get_coor_alt()
+        i = 1
+
+        calculations = open("predictedOutput.csv", "w")
+        csvWriter = csv.writer(calculations)
+        calcFields = ["Distance", "Azimuth", "Elevation", "r/p"]
+        csvWriter.writerow(calcFields)
+
+        while MainWindow.predictingTrack:
+            if (time.time() - timer) > 1:
+                timer = time.time()
+                currData = MainWindow.Balloon.get_coor_alt()
+
+                if newestLocation == currData:
+                    # need to predict!
+                    print("predicted output")
+                    timeDelta = MainWindow.Balloon.getTimeDiff()
+                    print("The time delta is: " + str(timeDelta))
+                    latStep = (newestLocation[0] - oldLocation[0]) / timeDelta
+                    longStep = (newestLocation[1] - oldLocation[1]) / timeDelta
+                    altStep = (newestLocation[2] - oldLocation[2]) / timeDelta
+
+                    # print(str(i) + " " + str(newestLocation[0] + (i * latStep)))
+
+                    Tracking_Calc = trackMath(MainWindow.GSLong, MainWindow.GSLat, MainWindow.GSAlt,
+                                              newestLocation[1] + (i * longStep), newestLocation[0] + (i * latStep), newestLocation[2] + (i * altStep))
+
+                    distance = Tracking_Calc.distance
+                    newElevation = Tracking_Calc.elevation()
+                    newAzimuth = Tracking_Calc.azimuth()
+
+                    print("distance: " + str(distance))
+                    print("elevation: " + str(newElevation))
+                    print("azimuth: " + str(newAzimuth) + "\n")
+
+                    row = [distance, newAzimuth, newElevation, "p"]
+                    csvWriter.writerow(row)
+
+                    i += 1
+                else:
+                    # go to the new actual spot
+                    oldLocation = newestLocation
+                    newestLocation = currData
+
+                    # note that trackMath takes arguments as long, lat, altitude
+                    Tracking_Calc = trackMath(MainWindow.GSLong, MainWindow.GSLat, MainWindow.GSAlt, currData[1],
+                                              currData[0], currData[2])
+
+                    distance = Tracking_Calc.distance
+                    newElevation = Tracking_Calc.elevation()
+                    newAzimuth = Tracking_Calc.azimuth()
+
+                    self.calcSignal.connect(MainWindow.displayCalculations)  # this seems to happen a lot for some reason
+                    self.calcSignal.emit(distance, newAzimuth, newElevation)
+
+                    print("Got new real ping!")
+                    print("distance: " + str(distance))
+                    print("elevation: " + str(newElevation))
+                    print("azimuth: " + str(newAzimuth) + "\n")
+
+                    # MainWindow.GSArduino.move_position(newAzimuth, newElevation)
+
+                    row = [distance, newAzimuth, newElevation, "r"]
+                    csvWriter.writerow(row)
+
+                    i = 1
+
+        print("All done tracking with predictions! :)")
+        calculations.close()
+        return
 
 
 if __name__ == "__main__":
