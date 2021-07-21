@@ -45,7 +45,7 @@ class trackMath:
 
         self.elev = np.rad2deg(self.elev)
 
-        if self.elev > 90:  # change to while loop?
+        if self.elev > 90:
             return 90
         elif self.elev < 0:
             return 0
@@ -58,7 +58,7 @@ class trackMath:
                          (math.cos(self.gslat)*math.sin(self.tlat))))/(self.distance*math.cos(np.deg2rad(self.elev)))
         self.az = np.rad2deg(math.atan2(a, b))
 
-        while self.az <= 0:
+        while self.az < 0:
             self.az += 360
 
         while self.az > 360:

@@ -331,6 +331,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.trackThread.finished.connect(self.trackThread.deleteLater)
 
         self.startButton.setEnabled(False)
+        self.predictionStartButton.setEnabled(False)
         self.calibrateButton.setEnabled(False)
 
         self.trackThread.start()
@@ -350,15 +351,17 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.trackThread.finished.connect(self.trackThread.deleteLater)
 
         self.startButton.setEnabled(False)
+        self.predictionStartButton.setEnabled(False)
         self.calibrateButton.setEnabled(False)
 
         self.trackThread.start()
 
     def stopTracking(self):
         self.tracking = False
-        self.startButton.setEnabled(True)
-        self.calibrateButton.setEnabled(True)
         self.predictingTrack = False
+        self.startButton.setEnabled(True)
+        self.predictionStartButton.setEnabled(True)
+        self.calibrateButton.setEnabled(True)
         self.errorMessageBox.setPlainText("tracking stopped")
         return
 
@@ -441,8 +444,6 @@ class Worker(QObject):
                     longStep = (newestLocation[1] - oldLocation[1]) / timeDelta
                     altStep = (newestLocation[2] - oldLocation[2]) / timeDelta
 
-                    # print(str(i) + " " + str(newestLocation[0] + (i * latStep)))
-
                     Tracking_Calc = trackMath(MainWindow.GSLong, MainWindow.GSLat, MainWindow.GSAlt,
                                               newestLocation[1] + (i * longStep), newestLocation[0] + (i * latStep), newestLocation[2] + (i * altStep))
 
@@ -454,10 +455,16 @@ class Worker(QObject):
                     print("elevation: " + str(newElevation))
                     print("azimuth: " + str(newAzimuth) + "\n")
 
+                    self.calcSignal.connect(MainWindow.displayCalculations)
+                    self.calcSignal.emit(distance, newAzimuth, newElevation)
+
                     row = [distance, newAzimuth, newElevation, "p"]
                     csvWriter.writerow(row)
 
+                    # MainWindow.GSArduino.move_position(newAzimuth, newElevation)
+
                     i += 1
+
                 else:
                     # go to the new actual spot
                     oldLocation = newestLocation

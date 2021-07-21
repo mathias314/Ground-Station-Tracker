@@ -2,6 +2,7 @@
 -------------------------------------------------------------------------------
 MIT License
 Copyright (c) 2021 Ronnel Walton
+Modified: Mathew Clutter
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -70,18 +71,6 @@ class Balloon_Coordinates:
         infoStr += "\n" + "Coordinates: (" + str(self.coor_alt[0]) + ", " + str(self.coor_alt[1]) + ")" + " Altitude: " + str(self.coor_alt[2])
         infoStr += "\n Balloon Selected!"
         return infoStr
-
-    # -----------------------------------------------------------------------------------------------------------------#
-    def getOldLocation(self):
-        req = requests.get("https://borealis.rci.montana.edu/flight?uid={}".format(self.uid))
-        data = req.json()
-
-        oldLocation = [data['data'][-2][3], data['data'][-2][4], data['data'][-2][5]]
-
-        for _ in oldLocation:
-            print(_)
-
-        return oldLocation
 
     def getTimeDiff(self):
         req = requests.get("https://borealis.rci.montana.edu/flight?uid={}".format(self.uid))
