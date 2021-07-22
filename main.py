@@ -46,9 +46,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.setupUi(self)
 
-        self.showFullScreen()
-        self.showMaximized()
-
         self.IMEIList = Balloon_Coordinates.list_IMEI()
 
         self.ports = serial.tools.list_ports.comports()
@@ -116,6 +113,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         font = self.font()
         font.setPointSize(11)  # can adjust for sizing
         QApplication.instance().setFont(font)
+
+        self.showMaximized()
 
         self.predictingTrack = False
 
@@ -450,6 +449,11 @@ class Worker(QObject):
                     distance = Tracking_Calc.distance
                     newElevation = Tracking_Calc.elevation()
                     newAzimuth = Tracking_Calc.azimuth()
+
+                    # keep average of azimuth/elevations
+                    # if new calculation is outlier, throw it out, don't go to new spot
+                    # reset average between pings
+                    # alternatively, implement some type of filter (savitzky golay, kalman, etc)
 
                     print("distance: " + str(distance))
                     print("elevation: " + str(newElevation))
