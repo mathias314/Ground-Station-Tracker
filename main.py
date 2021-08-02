@@ -52,7 +52,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.portNames = []
 
         self.arduinoConnected = False
-        self.IMEIAssigned = False
+        self.IMEIAssigned = True
         self.GSLocationSet = False
         self.calibrated = False
 
@@ -119,12 +119,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.predictingTrack = False
 
     def assignIMEI(self):
-        if self.IMEIComboBox.currentIndex() != 0:
+        if self.IMEIComboBox.currentIndex() == 0: # SHOULD BE != FOR NEW WEBSITE
             self.IMEIAssigned = True
-            self.Balloon = Balloon_Coordinates(self.IMEIList[self.IMEIComboBox.currentIndex() - 1])
+            # self.Balloon = Balloon_Coordinates(self.IMEIList[self.IMEIComboBox.currentIndex()])
+            print(self.IMEIComboBox.currentText())
+            self.Balloon = Balloon_Coordinates(self.IMEIComboBox.currentText())
             testStr = self.Balloon.print_info()
             self.errorMessageBox.setPlainText(testStr)
-            self.Balloon.getTimeDiff()
+            # self.Balloon.getTimeDiff()
         else:
             print("select a balloon ")
             self.errorMessageBox.setPlainText("Please select a balloon IMEI")
@@ -365,7 +367,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def displayCalculations(self, distance, azimuth, elevation):
-        # print("calling display calculations")
         self.distanceDisplay.setPlainText(str(distance))
         self.azimuthDisplay.setPlainText(str(azimuth))
         self.elevationDisplay.setPlainText(str(elevation))
