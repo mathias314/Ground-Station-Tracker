@@ -177,9 +177,9 @@ class Balloon_Coordinates:
                 "http://eclipse.rci.montana.edu/php/getTable.php?rLim=1000000&fltDate={}&imei={}".format(self.latest_flight,
                                                                                             self.imei))
             print("After req")
-            print(req.text)
+            # print(req.text)
             dataRaw = req.text.split(str(self.imei))[1]
-            print(dataRaw)
+            # print(dataRaw)
             self.coor_alt = []
             for index in range(6, 11, 2):
                 self.coor_alt.append(float(dataRaw.split(">")[index].split("<")[0].replace(",", "")))
@@ -215,7 +215,6 @@ class Balloon_Coordinates:
                                                                                             self.imei))
             for index in range(1, 3, 1):
                 lastTime.append(time.mktime(time.strptime(str(req.text.split(str(self.imei))[index].split(">")[2].split("<")[0]), "%H:%M:%S")))
-
 
         print(lastTime[0] - lastTime[1])
         return lastTime[0] - lastTime[1]
