@@ -34,6 +34,8 @@ from pylab import *
 from sunposition import sunpos
 from datetime import datetime
 import csv
+import statistics
+import numpy as np
 
 
 # todo: incorporate IMU
@@ -430,6 +432,9 @@ class Worker(QObject):
         calcFields = ["Distance", "Azimuth", "Elevation", "r/p"]
         csvWriter.writerow(calcFields)
 
+        azimuthList = []
+        elevationList = []
+
         while MainWindow.predictingTrack:
             if (time.time() - timer) > 1:
                 timer = time.time()
@@ -451,22 +456,30 @@ class Worker(QObject):
                     newElevation = Tracking_Calc.elevation()
                     newAzimuth = Tracking_Calc.azimuth()
 
+                    elevationList.append(newElevation)
+                    azimuthList.append(newAzimuth)
+
                     # keep average of azimuth/elevations
                     # if new calculation is outlier, throw it out, don't go to new spot
                     # reset average between pings
                     # alternatively, implement some type of filter (savitzky golay, kalman, etc)
 
-                    print("distance: " + str(distance))
-                    print("elevation: " + str(newElevation))
-                    print("azimuth: " + str(newAzimuth) + "\n")
+                    if newElevation > np.mean(elevationList) + (2 * np.std(elevationList)) or newElevation < np.mean(elevationList) - (2 * np.std(elevationList)) \
+                            or newAzimuth > np.mean(azimuthList) + (2 * np.std(azimuthList)) or newAzimuth < np.mean(azimuthList) - (2 * np.std(azimuthList)):
+                        print("outlier detected! ")
+                        pass
+                    else:
+                        print("distance: " + str(distance))
+                        print("elevation: " + str(newElevation))
+                        print("azimuth: " + str(newAzimuth) + "\n")
 
-                    self.calcSignal.connect(MainWindow.displayCalculations)
-                    self.calcSignal.emit(distance, newAzimuth, newElevation)
+                        self.calcSignal.connect(MainWindow.displayCalculations)
+                        self.calcSignal.emit(distance, newAzimuth, newElevation)
 
-                    row = [distance, newAzimuth, newElevation, "p"]
-                    csvWriter.writerow(row)
+                        row = [distance, newAzimuth, newElevation, "p"]
+                        csvWriter.writerow(row)
 
-                    # MainWindow.GSArduino.move_position(newAzimuth, newElevation)
+                        # MainWindow.GSArduino.move_position(newAzimuth, newElevation)
 
                     i += 1
 
@@ -497,6 +510,8 @@ class Worker(QObject):
                     csvWriter.writerow(row)
 
                     i = 1
+                    azimuthList = []
+                    elevationList = []
 
         print("All done tracking with predictions! :)")
         calculations.close()
