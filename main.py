@@ -38,8 +38,9 @@ import statistics
 import numpy as np
 
 
-# todo: incorporate IMU
+# todo: incorporate IMU?
 # todo: predict next iridium ping!
+# todo: calibrate without relying on the sun
 
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
