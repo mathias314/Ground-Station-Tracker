@@ -122,9 +122,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.predictingTrack = False
 
     def assignIMEI(self):
-        if self.IMEIComboBox.currentIndex() != 0:  # SHOULD BE != FOR NEW WEBSITE
+        if self.IMEIComboBox.currentIndex() != 0:  # SHOULD BE != FOR BOREALIS WEBSITE!
             self.IMEIAssigned = True
-            # self.Balloon = Balloon_Coordinates(self.IMEIList[self.IMEIComboBox.currentIndex()])
             print(self.IMEIComboBox.currentText())
             self.Balloon = Balloon_Coordinates(self.IMEIComboBox.currentText())
             testStr = self.Balloon.print_info()
@@ -142,10 +141,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.errorMessageBox.setPlainText("connected to arduino!")
             self.arduinoConnected = True
         elif self.arduinoConnected:
-            print("failed to connect to arduino")
+            print("Arduino already connected")
             self.errorMessageBox.setPlainText("Arduino already connected")
         else:
-            self.errorMessageBox.setPlainText("Unable to connect to arduino")
+            self.errorMessageBox.setPlainText("Unable to connect to Arduino")
 
         return
 
@@ -194,7 +193,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             check = self.GSArduino.warm_start()
             if not check:  # if the coords cannot be retrieved, return
                 print("Failed to get GPS coords, please try again")
-                self.errorMessageBox.setPlainText("Failed to get GPS coords, please try again")
+                self.errorMessageBox.setPlainText("Failed to get GPS coordinates, please try again")
                 return
             time.sleep(.25)
 
@@ -209,28 +208,32 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.GSAltBox.setPlainText(str(self.GSAlt))
         else:
             print("arduino not connected")
-            self.errorMessageBox.setPlainText("arduino not connected")
+            self.errorMessageBox.setPlainText("Arduino not connected")
 
         return
 
     def setGSLocation(self):
         try:
-            latStr = self.GSLatBox.toPlainText()
-            latStr = latStr.strip()
-            self.GSLat = float(latStr)
+            if self.arduinoConnected:
+                latStr = self.GSLatBox.toPlainText()
+                latStr = latStr.strip()
+                self.GSLat = float(latStr)
 
-            print(self.GSLat)
+                print(self.GSLat)
 
-            longStr = self.GSLongBox.toPlainText()
-            self.GSLong = float(longStr)
-            print(self.GSLong)
+                longStr = self.GSLongBox.toPlainText()
+                self.GSLong = float(longStr)
+                print(self.GSLong)
 
-            altStr = self.GSAltBox.toPlainText()
-            self.GSAlt = float(altStr)
-            print(self.GSAlt)
+                altStr = self.GSAltBox.toPlainText()
+                self.GSAlt = float(altStr)
+                print(self.GSAlt)
 
-            self.errorMessageBox.setPlainText("Ground station location entered successfully!")
-            self.GSLocationSet = True
+                self.errorMessageBox.setPlainText("Ground station location entered successfully!")
+                self.GSLocationSet = True
+            else:
+                self.errorMessageBox.setPlainText("Please connect arduino")
+                self.GSLocationSet = False
         except ValueError:
             print("numbers only for GPS location")
             self.errorMessageBox.setPlainText("invalid GPS location entered. Only enter numbers")
@@ -265,13 +268,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
                 self.GSArduino.calibrate(startingAzimuth, startingElevation)
                 self.calibrated = True
-                self.errorMessageBox.setPlainText("successfully calibrated!")
+                self.errorMessageBox.setPlainText("Successfully calibrated!")
             except ValueError:
                 print("numbers only for initial azimuth and elevation")
-                self.errorMessageBox.setPlainText("invalid input for initial azimuth and elevation")
+                self.errorMessageBox.setPlainText("Invalid input for initial azimuth and elevation")
         else:
             print("not connected to arduino")
-            self.errorMessageBox.setPlainText("not connected to arduino")
+            self.errorMessageBox.setPlainText("Not connected to arduino")
 
         return
 
