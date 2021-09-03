@@ -58,7 +58,7 @@ class Balloon_Coordinates:
         data = req.json()
         # Lat, Long, Alt
         self.coor_alt = [data['data'][-1][3], data['data'][-1][4], data['data'][-1][5]]
-        return self.coor_alt
+        return self.coor_alt  # [lat, long, altitude]
 
     def print_info(self):
         self.get_coor_alt()
@@ -77,6 +77,8 @@ class Balloon_Coordinates:
         data = req.json()
 
         lastTime = [data['data'][-1][2], data['data'][-2][2]]
+
+        print(lastTime[0])
 
         print(lastTime[0] - lastTime[1])
         # return lastTime[0] - lastTime[1]

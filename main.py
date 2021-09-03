@@ -42,6 +42,8 @@ import numpy as np
 # todo: predict next iridium ping!
 # todo: calibrate without relying on the sun
 
+DEBUG = True
+
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -128,7 +130,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.Balloon = Balloon_Coordinates(self.IMEIComboBox.currentText())
             testStr = self.Balloon.print_info()
             self.errorMessageBox.setPlainText(testStr)
-            # self.Balloon.getTimeDiff()
+            self.Balloon.getTimeDiff()
         else:
             print("select a balloon ")
             self.errorMessageBox.setPlainText("Please select a balloon IMEI")
@@ -523,6 +525,8 @@ class Worker(QObject):
 
 
 if __name__ == "__main__":
+    if DEBUG:
+        import fakeIridium
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = Window()
