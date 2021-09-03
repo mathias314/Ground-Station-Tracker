@@ -428,6 +428,10 @@ class Worker(QObject):
 
     def predictTrack(self):
         print("In predictTrack")
+        if DEBUG:
+            self.debugPredictTrack()
+            return
+
         timer = time.time()
         newestLocation = MainWindow.Balloon.get_coor_alt()
         oldLocation = MainWindow.Balloon.get_coor_alt()
@@ -521,6 +525,22 @@ class Worker(QObject):
 
         print("All done tracking with predictions! :)")
         calculations.close()
+        return
+
+    def debugPredictTrack(self):
+        print("In debug predict track")
+        flightData = open('flightData.csv')
+        csvReader = csv.reader(flightData)
+        next(csvReader)
+        timeDiffs = fakeIridium.getTimeDiffs()
+        print(timeDiffs)
+
+        # implement normal predict track function
+        # replace timediff check from website to using the list
+        # if the current time diff is less than the next entry in list, make prediction
+        # otherwise go to the next location in the csv file
+
+        flightData.close()
         return
 
 
