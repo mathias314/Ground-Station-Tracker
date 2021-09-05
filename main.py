@@ -42,7 +42,7 @@ import numpy as np
 # todo: predict next iridium ping!
 # todo: calibrate without relying on the sun
 
-DEBUG = True
+DEBUG = False
 
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
