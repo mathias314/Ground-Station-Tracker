@@ -18,38 +18,10 @@
    <layout class="QGridLayout" name="gridLayout_5">
     <item row="1" column="0">
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="2" column="2">
-       <widget class="QPushButton" name="panCounterClockwiseButton">
-        <property name="text">
-         <string>Pan Counter-Clockwise</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_13">
         <property name="text">
          <string>Degrees Per Click:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QPushButton" name="tiltUpButton">
-        <property name="text">
-         <string>             Tilt Up             </string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="3">
-       <widget class="QPushButton" name="tiltDownButton">
-        <property name="text">
-         <string>Tilt Down</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="4">
-       <widget class="QPushButton" name="panClockwiseButton">
-        <property name="text">
-         <string>       Pan Clockwise       </string>
         </property>
        </widget>
       </item>
@@ -80,6 +52,13 @@
         </item>
        </widget>
       </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="stopButton">
+        <property name="text">
+         <string>Stop Tracking</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
        <widget class="QPushButton" name="startButton">
         <property name="text">
@@ -88,18 +67,39 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="stopButton">
-        <property name="text">
-         <string>Stop Tracking</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0">
        <widget class="QPushButton" name="predictionStartButton">
         <property name="text">
          <string>Start Tracking 
  with Prediction</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QPushButton" name="tiltUpButton">
+        <property name="text">
+         <string>             Tilt Up             </string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QPushButton" name="tiltDownButton">
+        <property name="text">
+         <string>Tilt Down</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="panCounterClockwiseButton">
+        <property name="text">
+         <string>Pan Counter-Clockwise</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QPushButton" name="panClockwiseButton">
+        <property name="text">
+         <string>       Pan Clockwise       </string>
         </property>
        </widget>
       </item>
@@ -117,30 +117,6 @@
        </size>
       </property>
      </spacer>
-    </item>
-    <item row="0" column="0">
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QComboBox" name="IMEIComboBox"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QComboBox" name="COMPortComboBox"/>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="connectToArduinoButton">
-        <property name="text">
-         <string>Connect to Arduino</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="confirmIMEIButton">
-        <property name="text">
-         <string>Confirm IMEI</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </item>
     <item row="2" column="0">
      <layout class="QGridLayout" name="gridLayout_4"/>
@@ -281,9 +257,6 @@
       <item row="11" column="1">
        <widget class="QPlainTextEdit" name="elevationDisplay"/>
       </item>
-      <item row="14" column="1">
-       <widget class="QPlainTextEdit" name="errorMessageBox"/>
-      </item>
       <item row="5" column="2">
        <widget class="QPushButton" name="calculateStartingPosButton">
         <property name="text">
@@ -336,6 +309,33 @@
        <widget class="QLabel" name="label_16">
         <property name="text">
          <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="1">
+       <widget class="QPlainTextEdit" name="errorMessageBox"/>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="0">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QComboBox" name="IMEIComboBox"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QComboBox" name="COMPortComboBox"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="connectToArduinoButton">
+        <property name="text">
+         <string>Connect to Arduino</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="confirmIMEIButton">
+        <property name="text">
+         <string>Confirm IMEI</string>
         </property>
        </widget>
       </item>
