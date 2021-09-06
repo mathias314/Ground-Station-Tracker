@@ -120,6 +120,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         QApplication.instance().setFont(font)
 
         self.showMaximized()
+        # self.showFullScreen()
 
         self.predictingTrack = False
 
