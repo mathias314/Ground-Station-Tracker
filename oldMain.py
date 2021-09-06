@@ -25,7 +25,6 @@ from satelliteTrackingMath import trackMath
 from Ground_Station_Arduino import Ground_Station_Arduino
 import serial.tools.list_ports
 import time
-import csv
 
 
 timer = time.time()
