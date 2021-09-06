@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>921</width>
-    <height>907</height>
+    <width>958</width>
+    <height>844</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -80,6 +80,29 @@
         </item>
        </widget>
       </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="startButton">
+        <property name="text">
+         <string>Start Basic 
+ Tracking</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="stopButton">
+        <property name="text">
+         <string>Stop Tracking</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QPushButton" name="predictionStartButton">
+        <property name="text">
+         <string>Start Tracking 
+ with Prediction</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item row="1" column="1">
@@ -120,31 +143,7 @@
      </layout>
     </item>
     <item row="2" column="0">
-     <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="0">
-       <widget class="QPushButton" name="startButton">
-        <property name="text">
-         <string>Start Basic 
- Tracking</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="predictionStartButton">
-        <property name="text">
-         <string>Start Tracking 
- with Prediction</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QPushButton" name="stopButton">
-        <property name="text">
-         <string>Stop Tracking</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <layout class="QGridLayout" name="gridLayout_4"/>
     </item>
     <item row="0" column="2" rowspan="2">
      <layout class="QGridLayout" name="gridLayout_2">
@@ -349,7 +348,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>921</width>
+     <width>958</width>
      <height>21</height>
     </rect>
    </property>

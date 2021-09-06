@@ -67,13 +67,13 @@ adjusting = True
 while adjusting:
     moveDir = input("enter w a s d to adjust pan/tilt, q to exit: ").strip().lower()
     if moveDir == "w":
-        GSMotors.adjustTiltUp()
+        GSMotors.adjustTiltUp(1)
     elif moveDir == "s":
-        GSMotors.adjustTiltDown()
+        GSMotors.adjustTiltDown(1)
     elif moveDir == "a":
-        GSMotors.adjustPanPositive()
+        GSMotors.adjustPanPositive(1)
     elif moveDir == "d":
-        GSMotors.adjustPanNegative()
+        GSMotors.adjustPanNegative(1)
     elif moveDir == "q":
         adjusting = False
         break
