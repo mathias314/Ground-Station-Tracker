@@ -119,7 +119,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         font.setPointSize(11)  # can adjust for sizing
         QApplication.instance().setFont(font)
 
-        self.showMaximized()
+        # self.showMaximized()
         # self.showFullScreen()
 
         self.predictingTrack = False
@@ -551,6 +551,7 @@ if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = Window()
-    MainWindow.show()
+    # MainWindow.show()
+    MainWindow.showMaximized()
 
     sys.exit(app.exec_())
