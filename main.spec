@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['D:\\Mines OneDrive\\OneDrive - SDSMT\\BOREALIS\\Ground_Station_Tracker_GUI'],
+             pathex=['C:\\Users\\7527107\\OneDrive - SDSMT\\BOREALIS\\Ground_Station_Tracker_GUI'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -33,7 +33,7 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=False,
+          console=True,
           disable_windowed_traceback=False,
           target_arch=None,
           codesign_identity=None,

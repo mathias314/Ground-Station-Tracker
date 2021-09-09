@@ -22,7 +22,7 @@ SOFTWARE.
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, Qt, pyqtSlot
-from PyQt5.QtWidgets import QCompleter, QApplication
+from PyQt5.QtWidgets import QCompleter, QApplication, QDesktopWidget
 from designerFile import Ui_MainWindow
 import sys
 from Balloon_Coordinates import Balloon_Coordinates
@@ -119,6 +119,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         font.setPointSize(11)  # can adjust for sizing
         QApplication.instance().setFont(font)
 
+
         # self.showMaximized()
         # self.showFullScreen()
 
@@ -139,7 +140,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def connectToArduino(self):
-        if not self.arduinoConnected and self.COMPortComboBox.currentIndex() != 0:
+        if not self.arduinoConnected and self.COMPortComboBox.currentText():
             self.GSArduino = Ground_Station_Arduino(self.portNames[self.COMPortComboBox.currentIndex()], 9600)
             self.errorMessageBox.setPlainText("connected to arduino!")
             self.arduinoConnected = True

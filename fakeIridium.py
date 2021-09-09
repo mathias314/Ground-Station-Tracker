@@ -2,6 +2,7 @@ import csv
 import time
 from datetime import  datetime
 
+
 def getTimeDiffs():
     flightData = open('flightData.csv', "r")
 
