@@ -1,6 +1,6 @@
 import csv
 import time
-from datetime import  datetime
+from datetime import datetime
 
 
 def getTimeDiffs():
@@ -10,8 +10,9 @@ def getTimeDiffs():
     next(csvReader)
 
     firstLine = next(csvReader)
-    print(firstLine[1])
+    # print(firstLine[1])
     oldTime = datetime.strptime(firstLine[1], "%Y-%m-%dT%H:%M:%SZ")
+    # oldTime = 0
     print(oldTime)
 
     i = 0
@@ -21,10 +22,12 @@ def getTimeDiffs():
         uglyDate = line[1]
         currTime = datetime.strptime(uglyDate, "%Y-%m-%dT%H:%M:%SZ")
         print((currTime - oldTime).total_seconds())
-        fullTimeDiff[i] = (currTime - oldTime).total_seconds()
+        fullTimeDiff.append( (currTime - oldTime).total_seconds() )
 
         oldTime = currTime
         i += 1
+
+        print(i)
 
     flightData.close()
 

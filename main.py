@@ -315,9 +315,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         print("\n")
 
         if self.arduinoConnected and self.IMEIAssigned and self.calibrated and self.GSLocationSet:
-            if self.predictingTrack:
+            if self.predictingTrack and not DEBUG:
                 self.errorMessageBox.setPlainText("Starting tracking with predictions!")
                 self.predictTrack()
+            elif self.predictingTrack and DEBUG:
+                self.errorMessageBox.setPlainText("tracking with predictions debug mode")
+                self.debugPredictTrack()
             else:
                 self.errorMessageBox.setPlainText("starting tracking!")
                 print("starting tracking!")
@@ -359,6 +362,27 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.worker.finished.connect(self.trackThread.quit)  # pycharm has bug, this is correct
         self.worker.finished.connect(self.worker.deleteLater)  # https://youtrack.jetbrains.com/issue/PY-24183?_ga=2.240219907.1479555738.1625151876-2014881275.1622661488
+        self.trackThread.finished.connect(self.trackThread.deleteLater)
+
+        self.startButton.setEnabled(False)
+        self.predictionStartButton.setEnabled(False)
+        self.calibrateButton.setEnabled(False)
+
+        self.trackThread.start()
+
+    def debugPredictTrack(self):
+        self.tracking = True
+        self.errorMessageBox.setPlainText("Tracking with predictions (debug)!")
+        self.trackThread = QThread()
+        self.worker = Worker()
+
+        self.worker.moveToThread(self.trackThread)
+
+        self.trackThread.started.connect(self.worker.debugPredictTrack)
+
+        self.worker.finished.connect(self.trackThread.quit)  # pycharm has bug, this is correct
+        self.worker.finished.connect(
+            self.worker.deleteLater)  # https://youtrack.jetbrains.com/issue/PY-24183?_ga=2.240219907.1479555738.1625151876-2014881275.1622661488
         self.trackThread.finished.connect(self.trackThread.deleteLater)
 
         self.startButton.setEnabled(False)
@@ -531,9 +555,6 @@ class Worker(QObject):
 
     def debugPredictTrack(self):
         print("In debug predict track")
-        flightData = open('flightData.csv')
-        csvReader = csv.reader(flightData)
-        next(csvReader)
         timeDiffs = fakeIridium.getTimeDiffs()
         print(timeDiffs)
 
@@ -542,7 +563,6 @@ class Worker(QObject):
         # if the current time diff is less than the next entry in list, make prediction
         # otherwise go to the next location in the csv file
 
-        flightData.close()
         return
 
 
