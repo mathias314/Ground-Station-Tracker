@@ -152,6 +152,8 @@ class Ui_MainWindow(object):
         self.label_4 = QtWidgets.QLabel(self.centralwidget)
         self.label_4.setObjectName("label_4")
         self.gridLayout.addWidget(self.label_4, 0, 0, 1, 1)
+        spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout.addItem(spacerItem5, 4, 0, 1, 1)
         self.IMEIComboBox = QtWidgets.QComboBox(self.centralwidget)
         self.IMEIComboBox.setObjectName("IMEIComboBox")
         self.gridLayout.addWidget(self.IMEIComboBox, 1, 0, 1, 1)
@@ -167,8 +169,9 @@ class Ui_MainWindow(object):
         self.confirmIMEIButton = QtWidgets.QPushButton(self.centralwidget)
         self.confirmIMEIButton.setObjectName("confirmIMEIButton")
         self.gridLayout.addWidget(self.confirmIMEIButton, 1, 1, 1, 1)
-        spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.gridLayout.addItem(spacerItem5, 4, 0, 1, 1)
+        self.refreshCOMPortsButton = QtWidgets.QPushButton(self.centralwidget)
+        self.refreshCOMPortsButton.setObjectName("refreshCOMPortsButton")
+        self.gridLayout.addWidget(self.refreshCOMPortsButton, 3, 2, 1, 1)
         self.gridLayout_5.addLayout(self.gridLayout, 0, 0, 1, 1)
         spacerItem6 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_5.addItem(spacerItem6, 2, 0, 1, 1)
@@ -223,6 +226,7 @@ class Ui_MainWindow(object):
         self.connectToArduinoButton.setText(_translate("MainWindow", "Connect to Arduino"))
         self.label_11.setText(_translate("MainWindow", "Select Arduino From the List Below"))
         self.confirmIMEIButton.setText(_translate("MainWindow", "Confirm IMEI"))
+        self.refreshCOMPortsButton.setText(_translate("MainWindow", "Refresh"))
         self.menuBRAD_Station_Tracking_Software.setTitle(_translate("MainWindow", "BRAD Station Tracking Software"))
 
 

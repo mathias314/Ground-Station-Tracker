@@ -37,7 +37,6 @@ import csv
 import statistics
 import numpy as np
 
-
 # todo: incorporate IMU?
 # todo: predict next iridium ping!
 # todo: calibrate without relying on the sun
@@ -52,9 +51,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         self.IMEIList = Balloon_Coordinates.list_IMEI()
-
-        self.ports = serial.tools.list_ports.comports()
-        self.portNames = []
 
         self.arduinoConnected = False
         self.IMEIAssigned = False
@@ -80,17 +76,15 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         for i in range(len(self.IMEIList)):
             self.IMEIComboBox.addItem(self.IMEIList[i])
 
-        comPortCounter = 0
-        for port, desc, hwid in sorted(self.ports):
-            # self.COMPortComboBox.addItem("[{}] {}: {}".format(i, port, desc))
-            self.COMPortComboBox.addItem(desc)
-            self.portNames.append("{}".format(port))
-            comPortCounter += 1
-
         completer = QCompleter(self.IMEIList)
         completer.setFilterMode(Qt.MatchContains)
         self.IMEIComboBox.setEditable(True)
         self.IMEIComboBox.setCompleter(completer)
+
+        self.ports = None
+        self.portNames = []
+        self.comPortCounter = 0
+        self.refreshArduinoList()
 
         self.confirmIMEIButton.clicked.connect(self.assignIMEI)
 
@@ -99,10 +93,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.calibrateButton.clicked.connect(self.calibrate)
 
+        self.refreshCOMPortsButton.clicked.connect(self.refreshArduinoList)
         self.connectToArduinoButton.clicked.connect(self.connectToArduino)
 
         self.degreesPerClickBox.setCurrentIndex(1)
-        self.COMPortComboBox.setCurrentIndex(comPortCounter - 1)
+        self.COMPortComboBox.setCurrentIndex(self.comPortCounter - 1)
         self.tiltUpButton.clicked.connect(self.tiltUp)
         self.tiltDownButton.clicked.connect(self.tiltDown)
         self.panCounterClockwiseButton.clicked.connect(self.panClockwise)
@@ -138,6 +133,17 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.errorMessageBox.setPlainText("Please select a balloon IMEI")
             self.IMEIAssigned = False
         return
+
+    def refreshArduinoList(self):
+        self.COMPortComboBox.clear()
+        self.ports = serial.tools.list_ports.comports()
+        self.portNames = []
+        self.comPortCounter = 0
+        for port, desc, hwid in sorted(self.ports):
+            # self.COMPortComboBox.addItem("[{}] {}: {}".format(i, port, desc))
+            self.COMPortComboBox.addItem(desc)
+            self.portNames.append("{}".format(port))
+            self.comPortCounter += 1
 
     def connectToArduino(self):
         if not self.arduinoConnected and self.COMPortComboBox.currentText():
