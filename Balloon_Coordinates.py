@@ -23,6 +23,7 @@ SOFTWARE.
 
 import requests
 import time
+import sys
 
 
 class Balloon_Coordinates:
@@ -32,26 +33,41 @@ class Balloon_Coordinates:
 
         self.imei = imei
 
-        # Grab and Define IMEI's Latest Flight
-        req = requests.get("https://borealis.rci.montana.edu/meta/flights?imei={}".format(self.imei))
+        try:
+            # Grab and Define IMEI's Latest Flight
+            req = requests.get("https://borealis.rci.montana.edu/meta/flights?imei={}".format(self.imei))
+        except:  # does not catch if there is no internet
+            print("No internet connection detected")
+            sys.exit(-1)
+
         self.latest_flight = req.json()[-1]
 
         # Define UID
-        flightTime = int(time.mktime(time.strptime(self.latest_flight, "%Y-%m-%d")) - 21600 - Balloon_Coordinates.BOREALIS_EPOCH)
-        self.uid = (int(flightTime) << 24)|int(self.imei[8:])
+        flightTime = int(
+            time.mktime(time.strptime(self.latest_flight, "%Y-%m-%d")) - 21600 - Balloon_Coordinates.BOREALIS_EPOCH)
+        self.uid = (int(flightTime) << 24) | int(self.imei[8:])
+
         return
 
 
     @staticmethod
     def list_IMEI():
+
         # Request IMEI List
-        req = requests.get('https://borealis.rci.montana.edu/meta/imeis')
+        try:
+            req = requests.get('https://borealis.rci.montana.edu/meta/imeis')
+        except:
+            print("couldn't connect to internet")
+            print("Please connect to internet and relaunch")
+            sys.exit(-1)
+
         data = req.json()
         IMEIs = []
 
         for imei in data:
             IMEIs.append(imei)
         return IMEIs
+
 
     def get_coor_alt(self):
         req = requests.get("https://borealis.rci.montana.edu/flight?uid={}".format(self.uid))
