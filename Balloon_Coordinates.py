@@ -70,7 +70,12 @@ class Balloon_Coordinates:
 
 
     def get_coor_alt(self):
-        req = requests.get("https://borealis.rci.montana.edu/flight?uid={}".format(self.uid))
+        try:
+            req = requests.get("https://borealis.rci.montana.edu/flight?uid={}".format(self.uid))
+        except requests.exceptions.RequestException:
+            print("couldn't get updated position (no internet probably)")
+            return []
+
         data = req.json()
         # Lat, Long, Alt
         self.coor_alt = [data['data'][-1][3], data['data'][-1][4], data['data'][-1][5]]

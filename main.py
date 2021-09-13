@@ -426,23 +426,25 @@ class Worker(QObject):
             if (time.time() - timer) > 5:
                 timer = time.time()
                 Balloon_Coor = MainWindow.Balloon.get_coor_alt()
+                if not Balloon_Coor:
+                    pass
+                else:
+                    # note that trackMath takes arguments as long, lat, altitude
+                    Tracking_Calc = trackMath(MainWindow.GSLong, MainWindow.GSLat, MainWindow.GSAlt, Balloon_Coor[1],
+                                              Balloon_Coor[0], Balloon_Coor[2])
 
-                # note that trackMath takes arguments as long, lat, altitude
-                Tracking_Calc = trackMath(MainWindow.GSLong, MainWindow.GSLat, MainWindow.GSAlt, Balloon_Coor[1],
-                                          Balloon_Coor[0], Balloon_Coor[2])
+                    distance = Tracking_Calc.distance
+                    newElevation = Tracking_Calc.elevation()
+                    newAzimuth = Tracking_Calc.azimuth()
 
-                distance = Tracking_Calc.distance
-                newElevation = Tracking_Calc.elevation()
-                newAzimuth = Tracking_Calc.azimuth()
+                    print(str(self.i) + " Distance " + str(distance) + " Azimuth: " + str(newAzimuth) + ", Elevation: " + str(newElevation))
 
-                print(str(self.i) + " Distance " + str(distance) + " Azimuth: " + str(newAzimuth) + ", Elevation: " + str(newElevation))
+                    self.calcSignal.connect(MainWindow.displayCalculations)  # this seems to happen a lot for some reason
+                    self.calcSignal.emit(distance, newAzimuth, newElevation)
 
-                self.calcSignal.connect(MainWindow.displayCalculations)  # this seems to happen a lot for some reason
-                self.calcSignal.emit(distance, newAzimuth, newElevation)
+                    MainWindow.GSArduino.move_position(newAzimuth, newElevation)
 
-                MainWindow.GSArduino.move_position(newAzimuth, newElevation)
-
-                self.i += 1
+                    self.i += 1
 
         print("All done!")
         self.finished.emit()  # same pycharm bug as above
