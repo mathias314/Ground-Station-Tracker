@@ -36,7 +36,7 @@ class Balloon_Coordinates:
         try:
             # Grab and Define IMEI's Latest Flight
             req = requests.get("https://borealis.rci.montana.edu/meta/flights?imei={}".format(self.imei))
-        except:  # does not catch if there is no internet
+        except requests.exceptions.RequestException:  # does not catch if there is no internet
             print("No internet connection detected")
             sys.exit(-1)
 
@@ -56,7 +56,7 @@ class Balloon_Coordinates:
         # Request IMEI List
         try:
             req = requests.get('https://borealis.rci.montana.edu/meta/imeis')
-        except:
+        except requests.exceptions.RequestException:
             print("couldn't connect to internet")
             print("Please connect to internet and relaunch")
             sys.exit(-1)
