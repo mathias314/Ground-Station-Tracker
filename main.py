@@ -41,7 +41,7 @@ import numpy as np
 # todo: predict next iridium ping!
 # todo: calibrate without relying on the sun
 
-DEBUG = False
+DEBUG = True
 
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -398,6 +398,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.trackThread.start()
 
     def stopTracking(self):
+        # make the last command sent to the motors stop
+        # want it to stop as soon as you hit stop tracking
         self.tracking = False
         self.predictingTrack = False
         self.startButton.setEnabled(True)
@@ -565,6 +567,126 @@ class Worker(QObject):
         print("In debug predict track")
         timeDiffs = fakeIridium.getTimeDiffs()
         print(timeDiffs)
+
+        lats = fakeIridium.getLats()
+        print(lats)
+        longs = fakeIridium.getLongs()
+        print(longs)
+        alts = fakeIridium.getAlts()
+        print(alts)
+
+        timer = time.time()
+        timeDiffCounter = time.time()
+        index = 1
+
+        calculations = open("predictedOutput.csv", "w")
+        csvWriter = csv.writer(calculations)
+        calcFields = ["Distance", "Azimuth", "Elevation", "r/p"]
+        csvWriter.writerow(calcFields)
+
+        azimuthList = []
+        elevationList = []
+
+        newestLocation = oldLocation = [lats[1], longs[1], alts[1]]
+
+        i = 1
+
+        while MainWindow.predictingTrack:
+            if (time.time() - timer) > 1:
+                timer = time.time()
+                # currData = [lats[index], longs[index], alts[index]]
+
+                if (time.time() - timeDiffCounter) < timeDiffs[index]:
+                    # need to predict!
+                    print("predicted output")
+                    timeDelta = timeDiffs[index]
+                    print("The time delta is: " + str(timeDelta))
+
+                    latStep = (float(newestLocation[0]) - float(oldLocation[0])) / float(timeDelta)
+                    print("lat step: " + str(latStep))
+                    longStep = (float(newestLocation[1]) - float(oldLocation[1])) / float(timeDelta)
+                    print("long step: " + str(longStep))
+                    altStep = (float(newestLocation[2]) - float(oldLocation[2])) / float(timeDelta)
+                    print("alt step: " + str(altStep))
+
+                    Tracking_Calc = trackMath(MainWindow.GSLong, MainWindow.GSLat, MainWindow.GSAlt,
+                                              float(newestLocation[1]) + (i * longStep), float(newestLocation[0]) + (i * latStep),
+                                              float(newestLocation[2]) + (i * altStep))
+
+                    distance = Tracking_Calc.distance
+                    print("distance :" + str(distance))
+                    newElevation = Tracking_Calc.elevation()
+                    print("elevation: " + str(newElevation))
+                    newAzimuth = Tracking_Calc.azimuth()
+                    print("azimuth: " + str(newAzimuth))
+
+                    elevationList.append(newElevation)
+                    azimuthList.append(newAzimuth)
+
+                    # keep average of azimuth/elevations
+                    # if new calculation is outlier, throw it out, don't go to new spot
+                    # reset average between pings
+                    # alternatively, implement some type of filter (savitzky golay, kalman, etc)
+
+                    # if newElevation > np.mean(elevationList) + (2 * np.std(elevationList)) or newElevation < np.mean(
+                    #         elevationList) - (2 * np.std(elevationList)) \
+                    #         or newAzimuth > np.mean(azimuthList) + (2 * np.std(azimuthList)) or newAzimuth < np.mean(
+                    #     azimuthList) - (2 * np.std(azimuthList)):
+                    #     print("outlier detected! ")
+                    #     pass
+                    # else:
+
+                    self.calcSignal.connect(MainWindow.displayCalculations)
+                    self.calcSignal.emit(distance, newAzimuth, newElevation)
+
+                    row = [distance, newAzimuth, newElevation, "p"]
+                    csvWriter.writerow(row)
+
+                    # MainWindow.GSArduino.move_position(newAzimuth, newElevation)
+
+                    i += 1
+
+                    print("\n")
+
+                else:
+                    # go to the new actual spot
+                    index += 1
+                    oldLocation = newestLocation
+                    newestLocation = [lats[index], longs[index], alts[index]]
+
+                    # note that trackMath takes arguments as long, lat, altitude
+                    Tracking_Calc = trackMath(MainWindow.GSLong, MainWindow.GSLat, MainWindow.GSAlt, float(newestLocation[1]),
+                                              float(newestLocation[0]), float(newestLocation[2]))
+
+                    distance = Tracking_Calc.distance
+                    newElevation = Tracking_Calc.elevation()
+                    newAzimuth = Tracking_Calc.azimuth()
+
+                    self.calcSignal.connect(
+                        MainWindow.displayCalculations)  # this seems to happen a lot for some reason
+                    self.calcSignal.emit(distance, newAzimuth, newElevation)
+
+                    print("Got new real ping!")
+                    print("distance: " + str(distance))
+                    print("elevation: " + str(newElevation))
+                    print("azimuth: " + str(newAzimuth) + "\n")
+
+                    # MainWindow.GSArduino.move_position(newAzimuth, newElevation)
+
+                    row = [distance, newAzimuth, newElevation, "r"]
+                    csvWriter.writerow(row)
+
+                    i = 1
+                    azimuthList = []
+                    elevationList = []
+
+                    index += 1
+
+                    timeDiffCounter = time.time()
+
+        print("All done tracking with predictions! :)")
+        calculations.close()
+
 
         # implement normal predict track function
         # replace timediff check from website to using the list
