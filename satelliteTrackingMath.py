@@ -7,6 +7,7 @@ Modified: Ronnel Walton and Mathew Clutter
 Based on the Satellite Tracking Method from eutelsat and the University of Munich.
 
 """
+
 import math
 import numpy as np
 

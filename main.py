@@ -38,8 +38,14 @@ import statistics
 import numpy as np
 
 # todo: incorporate IMU?
-# todo: predict next iridium ping!
+# todo: predict next iridium ping (accurately without backlash)
 # todo: calibrate without relying on the sun
+
+# todo: make sure display window problems are fixed
+# todo: update docs
+# todo: code review/cleanup
+# todo: fix crash when restarting predictive tracking
+# todo: add button to point back at sun
 
 DEBUG = True
 
@@ -127,7 +133,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.Balloon = Balloon_Coordinates(self.IMEIComboBox.currentText())
             testStr = self.Balloon.print_info()
             self.errorMessageBox.setPlainText(testStr)
-            self.Balloon.getTimeDiff()
+            # self.Balloon.getTimeDiff()
         else:
             print("select a balloon ")
             self.errorMessageBox.setPlainText("Please select a balloon IMEI")
@@ -594,7 +600,6 @@ class Worker(QObject):
         while MainWindow.predictingTrack:
             if (time.time() - timer) > 1:
                 timer = time.time()
-                # currData = [lats[index], longs[index], alts[index]]
 
                 if (time.time() - timeDiffCounter) < timeDiffs[index]:
                     # need to predict!
