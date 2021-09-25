@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['C:\\Users\\7527107\\OneDrive - SDSMT\\BOREALIS\\Ground_Station_Tracker_GUI'],
+             pathex=['D:\\Mines OneDrive\\OneDrive - SDSMT\\BOREALIS\\Ground_Station_Tracker_GUI'],
              binaries=[],
              datas=[],
              hiddenimports=[],

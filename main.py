@@ -41,10 +41,10 @@ import numpy as np
 # todo: predict next iridium ping (accurately without backlash)
 # todo: calibrate without relying on the sun
 
-# todo: make sure display window problems are fixed
+# todo: make sure display window problems are fixed (or exe works everywhere)
 # todo: update docs
 # todo: code review/cleanup
-# todo: fix crash when restarting predictive tracking
+# todo: fix crash when restarting predictive tracking (further test exe build)
 # todo: add button to point back at sun
 
 DEBUG = True
@@ -647,7 +647,7 @@ class Worker(QObject):
                     row = [distance, newAzimuth, newElevation, "p"]
                     csvWriter.writerow(row)
 
-                    # MainWindow.GSArduino.move_position(newAzimuth, newElevation)
+                    MainWindow.GSArduino.move_position(newAzimuth, newElevation)
 
                     i += 1
 
@@ -676,7 +676,7 @@ class Worker(QObject):
                     print("elevation: " + str(newElevation))
                     print("azimuth: " + str(newAzimuth) + "\n")
 
-                    # MainWindow.GSArduino.move_position(newAzimuth, newElevation)
+                    MainWindow.GSArduino.move_position(newAzimuth, newElevation)
 
                     row = [distance, newAzimuth, newElevation, "r"]
                     csvWriter.writerow(row)
