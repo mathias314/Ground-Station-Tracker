@@ -33,6 +33,7 @@ class trackMath:
         self.distance = self.distance()
 
     def distance(self):
+        # calculates distance from ground station to the balloon (in m)
         a = math.pow((self.rgeo*math.cos(self.tlat)*math.cos(self.w)-self.rgs*math.cos(self.gslat)),2)
         b = math.pow(self.rgeo,2)*math.pow(math.cos(self.tlat),2)*math.pow(math.sin(self.w),2)
         c = math.pow((self.rgeo*math.sin(self.tlat)-self.rgs*math.sin(self.gslat)),2)
@@ -40,6 +41,7 @@ class trackMath:
         return self.distance
 
     def elevation(self):
+        # calculates the elevation from the ground station to the ballon (degrees)
         a = math.cos(self.gslat)*self.rgeo*math.cos(self.tlat)*math.cos(self.w)
         b = self.rgeo*math.sin(self.gslat)*math.sin(self.tlat)
         self.elev = -math.asin(-((a+b-self.rgs)/self.distance))
@@ -54,6 +56,7 @@ class trackMath:
             return self.elev
 
     def azimuth(self):
+        # calculates the azimuth from the ground station to the balloon (compass bearing degrees)
         a = -(self.rgeo*math.cos(self.tlat)*math.sin(self.w))/(self.distance*math.cos(np.deg2rad(self.elev)))
         b = -(self.rgeo*((math.sin(self.gslat)*math.cos(self.tlat)*math.cos(self.w))-
                          (math.cos(self.gslat)*math.sin(self.tlat))))/(self.distance*math.cos(np.deg2rad(self.elev)))

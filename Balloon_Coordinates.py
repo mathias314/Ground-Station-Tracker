@@ -52,6 +52,7 @@ class Balloon_Coordinates:
 
     @staticmethod
     def list_IMEI():
+    # grab the list of all of the imei's on the borealis server
 
         # Request IMEI List
         try:
@@ -70,6 +71,7 @@ class Balloon_Coordinates:
 
 
     def get_coor_alt(self):
+        # returns a list containing the lat, long, and alt of the latest ping from the selected IMEI
         try:
             req = requests.get("https://borealis.rci.montana.edu/flight?uid={}".format(self.uid))
         except requests.exceptions.RequestException:
@@ -82,6 +84,7 @@ class Balloon_Coordinates:
         return self.coor_alt  # [lat, long, altitude]
 
     def print_info(self):
+        # prints the latest lat, long and alt of the balloon
         self.get_coor_alt()
         print("IMEI: ", self.imei)
         print("Date:", self.latest_flight)
@@ -94,6 +97,7 @@ class Balloon_Coordinates:
         return infoStr
 
     def getTimeDiff(self):
+        # finds the difference in time between the latest ping and the one before
         req = requests.get("https://borealis.rci.montana.edu/flight?uid={}".format(self.uid))
         data = req.json()
 

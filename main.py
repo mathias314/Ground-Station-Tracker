@@ -50,6 +50,8 @@ DEBUG = True
 
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
+    # This class connects functionality to buttons in the GUI
+    # The "main" class
     def __init__(self):
         super(Window, self).__init__()
 
@@ -119,13 +121,15 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         font.setPointSize(11)  # can adjust for sizing
         QApplication.instance().setFont(font)
 
-
         # self.showMaximized()
         # self.showFullScreen()
 
         self.predictingTrack = False
 
     def assignIMEI(self):
+        # this function checks if an IMEI has been selected
+        # if an IMEI has been selected, it creates an instance of the balloon coordinates class using the IMEI
+        # if an IMEI has not been selected, it simply returns
         if self.IMEIComboBox.currentIndex() != 0:  # SHOULD BE != FOR BOREALIS WEBSITE!
             self.IMEIAssigned = True
             print(self.IMEIComboBox.currentText())
@@ -140,6 +144,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def refreshArduinoList(self):
+        # this function searches the list of COM ports, and adds devices that it finds to the COM port combobox
         self.COMPortComboBox.clear()
         self.ports = serial.tools.list_ports.comports()
         self.portNames = []
@@ -151,6 +156,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.comPortCounter += 1
 
     def connectToArduino(self):
+        # checks if arduino is selected, and if the connection is not already made, instantiates an instance of
+        # the Ground_Station_Arduino class
+        # if an arduino is connected, or one is not selected, the function returns
         if not self.arduinoConnected and self.COMPortComboBox.currentText():
             self.GSArduino = Ground_Station_Arduino(self.portNames[self.COMPortComboBox.currentIndex()], 9600)
             self.statusBox.setPlainText("connected to arduino!")
@@ -164,6 +172,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def tiltUp(self):
+        # if an arduino is connected, uses GSArduino to adjust the tilt up
         if self.arduinoConnected:
             self.GSArduino.adjustTiltUp(self.degreesPerClickBox.currentText())
             self.statusBox.setPlainText("adjusting tilt up " + self.degreesPerClickBox.currentText() + " degrees")
@@ -174,6 +183,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def tiltDown(self):
+        # if an arduino is connected, uses GSArduino to adjust the tilt down
         if self.arduinoConnected:
             self.GSArduino.adjustTiltDown(self.degreesPerClickBox.currentText())
             self.statusBox.setPlainText("adjusting tilt down " + self.degreesPerClickBox.currentText() + " degrees")
@@ -184,6 +194,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def panCounterClockwise(self):
+        # if an arduino is connected, uses GSArduino to adjust the pan counter-clockwise
         if self.arduinoConnected:
             self.GSArduino.adjustPanNegative(self.degreesPerClickBox.currentText())
             self.statusBox.setPlainText("adjusting pan " + self.degreesPerClickBox.currentText() + " degrees negative")
@@ -194,6 +205,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def panClockwise(self):
+        # if an arduino is connected, uses GSArduino to adjust the pan clockwise
         if self.arduinoConnected:
             self.GSArduino.adjustPanPositive(self.degreesPerClickBox.currentText())
             self.statusBox.setPlainText("adjusting pan " + self.degreesPerClickBox.currentText() + " degrees positive")
@@ -204,6 +216,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def getGSLocation(self):
+        # if the arduino is connected, this uses a GPS shield to request the coordinates of the ground station
+        # it includes a check to ensure that the shield has a gps lock
+        # if all conditions are met, the location of the ground station is set
+        # if something fails, the function returns and nothing is set
         if self.arduinoConnected:
             check = self.GSArduino.warm_start()
             if not check:  # if the coords cannot be retrieved, return
@@ -228,6 +244,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def setGSLocation(self):
+        # this ensures that the arduino is connected, and valid text is present in the gs location text boxes
+        # if the values present can be converted to floats, the starting location of the gs is set
         try:
             if self.arduinoConnected:
                 latStr = self.GSLatBox.toPlainText()
@@ -250,10 +268,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.statusBox.setPlainText("Please connect arduino")
                 self.GSLocationSet = False
         except ValueError:
-            print("numbers only for GPS location")
-            self.statusBox.setPlainText("invalid GPS location entered. Only enter numbers")
+            print("numbers only for GPS location (decimal degrees)")
+            self.statusBox.setPlainText("Invalid GPS location entered. Please only enter numbers")
 
     def getStartingPos(self):
+        # this makes a call to sunposition to calculate the azimuth and elevation of the sun at the current location
+        # of the ground station
+        # it populates the starting aziumth and elevation boxes
         if self.GSLocationSet:
             now = datetime.utcnow()
             az, elev = sunpos(now, self.GSLat, self.GSLong, self.GSAlt)[:2]  # discard RA, dec, H
@@ -271,6 +292,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def calibrate(self):
+        # sends the GSArduino class the starting azimuth and elevation
         if self.arduinoConnected:
             try:
                 startingAzimuthStr = self.startingAzimuthBox.toPlainText()
@@ -294,11 +316,15 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def setPredictTrack(self):
+        # sets the predict track bool variable
+        # then calls the checkIfReady function to ensure all conditions to track have been met
         self.predictingTrack = True
         self.checkIfReady()
         return
 
     def checkIfReady(self):
+        # this function ensures that all conditions to track have been met
+        # if they have been, it calls the appropriate function to either start tracking with/without predictions
         if self.calibrated:
             print("Calibrated!")
         else:
@@ -342,6 +368,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             return False
 
     def callTrack(self):
+        # sets up the qt thread to start tracking, and starts the thread
         self.tracking = True
         self.statusBox.setPlainText("Tracking!")
         self.trackThread = QThread()
@@ -362,6 +389,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.trackThread.start()
 
     def callPredictTrack(self):
+        # sets up the qt thread to start tracking with predictions and starts the thread
         self.tracking = True
         self.statusBox.setPlainText("Tracking with predictions!")
         self.trackThread = QThread()
@@ -403,7 +431,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.trackThread.start()
 
     def stopTracking(self):
-        # make the last command sent to the motors stop
+        # this stops the tracking thread, thus stopping the tracking
+
+        # TODO: make the last command sent to the motors stop
         # want it to stop as soon as you hit stop tracking
         self.tracking = False
         self.predictingTrack = False
@@ -414,6 +444,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def displayCalculations(self, distance, azimuth, elevation):
+        # this displays the outputs from the tracking threads on the GUI
         self.distanceDisplay.setPlainText(str(distance))
         self.azimuthDisplay.setPlainText(str(azimuth))
         self.elevationDisplay.setPlainText(str(elevation))
@@ -421,6 +452,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
 class Worker(QObject):
+    # worker class to track without making the GUI hang
     finished = pyqtSignal()
 
     calcSignal = pyqtSignal(float, float, float)
@@ -428,6 +460,10 @@ class Worker(QObject):
     i = 0
 
     def track(self):
+        # basic tracking algorithm
+        # checks for updated position every 5 seconds
+        # if a new position has been found, calculate the azimuth and elevation to point at the new location
+        # send the motors a command to move to the new position
         timer = time.time() - 4
         while MainWindow.tracking:
             if (time.time() - timer) > 5:
@@ -457,17 +493,17 @@ class Worker(QObject):
         self.finished.emit()  # same pycharm bug as above
         return
 
-    # check for new location from server
-    # if the new location is still the same, go to prediction
-    # if there is new location, go to that latest location
-
-    # find the difference between the latest lat/long location and the one before the last one and time
-    # using last vertical velocity/altitude, find difference between altitudes/new altitude after ~1 second
-    # find the amount that the position is changing each ~second
-    # input the new predicted lat/long/alt into math equations to get new azimuth/elevation
-    # go to the predicted elevation/azimuth
-
     def predictTrack(self):
+        # check for new location from server
+        # if the new location is still the same, go to prediction
+        # if there is new location, go to that latest location
+
+        # find the difference between the latest lat/long location and the one before the last one and time
+        # using last vertical velocity/altitude, find difference between altitudes/new altitude after ~1 second
+        # find the amount that the position is changing each ~second
+        # input the new predicted lat/long/alt into math equations to get new azimuth/elevation
+        # go to the predicted elevation/azimuth
+
         print("In predictTrack")
         if DEBUG:
             self.debugPredictTrack()
@@ -569,6 +605,11 @@ class Worker(QObject):
         return
 
     def debugPredictTrack(self):
+        # implement normal predict track function
+        # replace timediff check from website to using the list
+        # if the current time diff is less than the next entry in list, make prediction
+        # otherwise go to the next location in the csv file
+
         print("In debug predict track")
         timeDiffs = fakeIridium.getTimeDiffs()
         print(timeDiffs)
@@ -691,18 +732,15 @@ class Worker(QObject):
         print("All done tracking with predictions! :)")
         calculations.close()
 
-
-        # implement normal predict track function
-        # replace timediff check from website to using the list
-        # if the current time diff is less than the next entry in list, make prediction
-        # otherwise go to the next location in the csv file
-
         return
 
 
 if __name__ == "__main__":
     if DEBUG:
         import fakeIridium
+
+    # standard pyqt5 main
+    # sets up and shows the window
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = Window()
