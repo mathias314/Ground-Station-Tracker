@@ -232,7 +232,7 @@
        <widget class="QPlainTextEdit" name="elevationDisplay"/>
       </item>
       <item row="14" column="1">
-       <widget class="QPlainTextEdit" name="errorMessageBox"/>
+       <widget class="QPlainTextEdit" name="statusBox"/>
       </item>
       <item row="5" column="2">
        <widget class="QPushButton" name="calculateStartingPosButton">

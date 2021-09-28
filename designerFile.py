@@ -114,9 +114,9 @@ class Ui_MainWindow(object):
         self.elevationDisplay = QtWidgets.QPlainTextEdit(self.centralwidget)
         self.elevationDisplay.setObjectName("elevationDisplay")
         self.gridLayout_2.addWidget(self.elevationDisplay, 11, 1, 1, 1)
-        self.errorMessageBox = QtWidgets.QPlainTextEdit(self.centralwidget)
-        self.errorMessageBox.setObjectName("errorMessageBox")
-        self.gridLayout_2.addWidget(self.errorMessageBox, 14, 1, 1, 1)
+        self.statusBox = QtWidgets.QPlainTextEdit(self.centralwidget)
+        self.statusBox.setObjectName("statusBox")
+        self.gridLayout_2.addWidget(self.statusBox, 14, 1, 1, 1)
         self.calculateStartingPosButton = QtWidgets.QPushButton(self.centralwidget)
         self.calculateStartingPosButton.setObjectName("calculateStartingPosButton")
         self.gridLayout_2.addWidget(self.calculateStartingPosButton, 5, 2, 1, 1)
@@ -232,13 +232,3 @@ class Ui_MainWindow(object):
         self.confirmIMEIButton.setText(_translate("MainWindow", "Confirm IMEI"))
         self.refreshCOMPortsButton.setText(_translate("MainWindow", "Refresh"))
         self.menuBRAD_Station_Tracking_Software.setTitle(_translate("MainWindow", "BRAD Station Tracking Software"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
