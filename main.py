@@ -42,11 +42,9 @@ import numpy as np
 # todo: calibrate without relying on the sun
 
 # todo: make sure display window problems are fixed (or exe works everywhere)
-# todo: code review/cleanup
-# todo: fix crash when restarting predictive tracking (further test exe build)
 # todo: add button to point back at sun
 
-DEBUG = True
+DEBUG = False
 
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -390,8 +388,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def callPredictTrack(self):
         # sets up the qt thread to start tracking with predictions and starts the thread
-        self.tracking = True
         self.statusBox.setPlainText("Tracking with predictions!")
+        print("In predictTrack call")
+        self.tracking = True
         self.trackThread = QThread()
         self.worker = Worker()
 
@@ -435,12 +434,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # TODO: make the last command sent to the motors stop
         # want it to stop as soon as you hit stop tracking
-        self.tracking = False
-        self.predictingTrack = False
-        self.startButton.setEnabled(True)
-        self.predictionStartButton.setEnabled(True)
-        self.calibrateButton.setEnabled(True)
-        self.statusBox.setPlainText("tracking stopped")
+        if self.tracking:
+            self.tracking = False
+            self.predictingTrack = False
+            self.startButton.setEnabled(True)
+            self.predictionStartButton.setEnabled(True)
+            self.calibrateButton.setEnabled(True)
+            self.statusBox.setPlainText("tracking stopped")
         return
 
     def displayCalculations(self, distance, azimuth, elevation):
@@ -602,6 +602,7 @@ class Worker(QObject):
 
         print("All done tracking with predictions! :)")
         calculations.close()
+        self.finished.emit()
         return
 
     def debugPredictTrack(self):
