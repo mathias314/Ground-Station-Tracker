@@ -42,7 +42,10 @@ import numpy as np
 # todo: calibrate without relying on the sun
 
 # todo: make sure display window problems are fixed (or exe works everywhere)
-# todo: add button to point back at sun
+# todo: add button to point back at sun (do next!)
+# todo: test button to send new sun position to the arduino
+# todo: add e-stop button
+
 
 DEBUG = False
 
@@ -109,6 +112,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.panClockwiseButton.clicked.connect(self.panCounterClockwise)
 
         self.calculateStartingPosButton.clicked.connect(self.getStartingPos)
+
+        self.backToSunButton.clicked.connect(self.returnToSun)
 
         self.startButton.clicked.connect(self.checkIfReady)
         self.stopButton.clicked.connect(self.stopTracking)
@@ -312,6 +317,23 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.statusBox.setPlainText("Not connected to arduino")
 
         return
+
+    def returnToSun(self):
+        if self.arduinoConnected and self.GSLocationSet:
+            now = datetime.utcnow()
+            az, elev = sunpos(now, self.GSLat, self.GSLong, self.GSAlt)[:2]  # discard RA, dec, H
+
+            self.GSArduino.move_position(az, elev)
+
+            self.startingAzimuth = az
+            self.startingElevation = elev
+
+            self.startingAzimuthBox.setPlainText(az)
+            self.startingElevationBox.setPlainText(elev)
+
+        else:
+            self.statusBox.setPlainText("Ensure that arduino is connected and GS location is set")
+            print("Cannot point back at the sun")
 
     def setPredictTrack(self):
         # sets the predict track bool variable
