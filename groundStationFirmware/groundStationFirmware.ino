@@ -100,7 +100,7 @@ void waitForPosition1(int32_t targetPosition)
   do
   {
     resetCommandTimeout();
-  } while (tic1.getCurrentPosition() != targetPosition);
+  } while (tic1.getCurrentPosition() != targetPosition && Serial.peek() != 'E'); // and serial read is not E (Serial.peek() ?)
 
   if(negativeOldAzimuth == true)
   {
@@ -122,7 +122,7 @@ void waitForPosition2(int32_t targetPosition)
   do
   {
     resetCommandTimeout();
-  } while (tic2.getCurrentPosition() != targetPosition);
+  } while (tic2.getCurrentPosition() != targetPosition && Serial.peek() != 'E');
 
   oldElevation = newElevation;
   tic2.haltAndSetPosition(0);
@@ -235,6 +235,14 @@ void adjustTiltDown()
   waitForPosition2(-adjustedPos);
 }
 
+void eStop()
+{
+  tic1.setTargetPosition(tic1.getCurrentPosition());
+  tic2.setTargetPosition(tic1.getCurrentPosition());
+
+  // maybe have to change the current azimuth/elevation after estop?
+}
+
 
 void getGPS()
 {
@@ -290,6 +298,10 @@ void loop()
     else if(bytes_in[0] == 'D')
     {
       adjustPanNeg();
+    }
+    else if(bytes_in[0] == 'E')
+    {
+      eStop();
     }
     else
     {

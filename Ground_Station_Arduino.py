@@ -80,6 +80,11 @@ class Ground_Station_Arduino:
         time.sleep(.05)
         return
 
+    def sendEStop(self):
+        self.COM_Port.write(bytes("E", "utf-8"))
+        time.sleep(.1)
+        return
+
     def warm_start(self):
         # requests the GPS position of the ground station
         self.Coordinates = self.req_GPS()

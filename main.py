@@ -117,6 +117,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.startButton.clicked.connect(self.checkIfReady)
         self.stopButton.clicked.connect(self.stopTracking)
+        self.EStopButton.clicked.connect(self.EStop)
 
         self.predictionStartButton.clicked.connect(self.setPredictTrack)
 
@@ -463,6 +464,15 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.predictionStartButton.setEnabled(True)
             self.calibrateButton.setEnabled(True)
             self.statusBox.setPlainText("tracking stopped")
+        return
+
+    def EStop(self):
+        self.GSArduino.sendEStop()
+        self.stopTracking()
+
+        self.statusBox.setPlainText("E-Stop triggered \n Please recalibrate before starting again")
+        print("E-Stopped must recalibrate before starting tracking")
+
         return
 
     def displayCalculations(self, distance, azimuth, elevation):
