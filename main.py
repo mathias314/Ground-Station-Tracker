@@ -42,7 +42,7 @@ import numpy as np
 # todo: calibrate without relying on the sun!!!!!
 
 # todo: make sure display window problems are fixed (or exe works everywhere)
-# todo: test button to send new sun position to the arduino
+# todo: fix window crash after sending back to sun command!
 
 
 DEBUG = False
@@ -318,7 +318,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def returnToSun(self):
-        if self.arduinoConnected and self.GSLocationSet:
+        if self.arduinoConnected and self.GSLocationSet and self.calibrated:
             now = datetime.utcnow()
             az, elev = sunpos(now, self.GSLat, self.GSLong, self.GSAlt)[:2]  # discard RA, dec, H
 
@@ -333,6 +333,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.statusBox.setPlainText("Ensure that arduino is connected and GS location is set")
             print("Cannot point back at the sun")
+
+        return
 
     def setPredictTrack(self):
         # sets the predict track bool variable
