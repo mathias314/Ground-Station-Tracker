@@ -1,4 +1,4 @@
-// todo: add an e-stop functionality
+// todo: test removing backlash
 
 /*
 -------------------------------------------------------------------------------

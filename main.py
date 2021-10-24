@@ -39,12 +39,10 @@ import numpy as np
 
 # todo: incorporate IMU?
 # todo: predict next iridium ping (accurately without backlash)
-# todo: calibrate without relying on the sun
+# todo: calibrate without relying on the sun!!!!!
 
 # todo: make sure display window problems are fixed (or exe works everywhere)
-# todo: add button to point back at sun (do next!)
 # todo: test button to send new sun position to the arduino
-# todo: add e-stop button
 
 
 DEBUG = False
@@ -454,9 +452,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def stopTracking(self):
         # this stops the tracking thread, thus stopping the tracking
-
-        # TODO: make the last command sent to the motors stop
-        # want it to stop as soon as you hit stop tracking
         if self.tracking:
             self.tracking = False
             self.predictingTrack = False
