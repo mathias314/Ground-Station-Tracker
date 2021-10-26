@@ -42,7 +42,6 @@ import numpy as np
 # todo: calibrate without relying on the sun!!!!!
 
 # todo: make sure display window problems are fixed (or exe works everywhere)
-# todo: fix window crash after sending back to sun command!
 
 
 DEBUG = False
@@ -327,11 +326,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.startingAzimuth = az
             self.startingElevation = elev
 
-            self.startingAzimuthBox.setPlainText(az)
-            self.startingElevationBox.setPlainText(elev)
+            self.startingAzimuthBox.setPlainText(str(self.startingAzimuth))
+            self.startingElevationBox.setPlainText(str(self.startingElevation))
+            self.statusBox.setPlainText("at new sun position")
 
         else:
-            self.statusBox.setPlainText("Ensure that arduino is connected and GS location is set")
+            self.statusBox.setPlainText("Ensure that arduino is connected, GS location is set and calibration is set")
             print("Cannot point back at the sun")
 
         return
