@@ -45,6 +45,7 @@ import numpy as np
 # todo: calibrate without relying on the sun!!!!!
 
 # todo: make sure display window problems are fixed (or exe works everywhere)
+# todo: fix crash when hitting estop when not tracking
 
 
 DEBUG = False
