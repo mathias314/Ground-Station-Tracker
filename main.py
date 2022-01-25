@@ -40,12 +40,15 @@ import csv
 import statistics
 import numpy as np
 
+
 # todo: incorporate IMU?
-# todo: predict next iridium ping (accurately without backlash)
-# todo: calibrate without relying on the sun!!!!!
+# todo: handle backlash
+# todo: calibrate with IMU
 
 # todo: make sure display window problems are fixed (or exe works everywhere)
 # todo: fix crash when hitting estop when not tracking
+
+# todo: clean up this code and better document for HASP
 
 
 DEBUG = False
