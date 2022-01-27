@@ -46,7 +46,6 @@ import numpy as np
 # todo: calibrate with IMU
 
 # todo: make sure display window problems are fixed (or exe works everywhere)
-# todo: fix crash when hitting estop when not tracking
 
 # todo: clean up this code and better document for HASP
 
@@ -471,11 +470,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def EStop(self):
-        self.GSArduino.sendEStop()
-        self.stopTracking()
+        if self.arduinoConnected:
+            self.GSArduino.sendEStop()
+            self.stopTracking()
 
-        self.statusBox.setPlainText("E-Stop triggered \n Please recalibrate before starting again")
-        print("E-Stopped must recalibrate before starting tracking")
+            self.statusBox.setPlainText("E-Stop triggered \n Please recalibrate before starting again")
+            print("E-Stopped must recalibrate before starting tracking")
 
         return
 
