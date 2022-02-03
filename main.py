@@ -42,10 +42,10 @@ import numpy as np
 
 
 # todo: incorporate IMU?
-# todo: handle backlash
+# todo: handle backlash for predictive tracking
 # todo: calibrate with IMU
 
-# todo: make sure display window problems are fixed (or exe works everywhere)
+# todo: make sure display window problems are fixed (or exe works everywhere) (test on more computers)
 
 # todo: clean up this code and better document for HASP
 
