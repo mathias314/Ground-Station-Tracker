@@ -69,7 +69,6 @@ class Balloon_Coordinates:
             IMEIs.append(imei)
         return IMEIs
 
-
     def get_coor_alt(self):
         # returns a list containing the lat, long, and alt of the latest ping from the selected IMEI
         try:
@@ -79,8 +78,13 @@ class Balloon_Coordinates:
             return []
 
         data = req.json()
+
+        # print(data['data'][-1][3])
+
         # Lat, Long, Alt
         self.coor_alt = [data['data'][-1][3], data['data'][-1][4], data['data'][-1][5]]
+        print(self.coor_alt)
+
         return self.coor_alt  # [lat, long, altitude]
 
     def print_info(self):
@@ -88,7 +92,7 @@ class Balloon_Coordinates:
         self.get_coor_alt()
         print("IMEI: ", self.imei)
         print("Date:", self.latest_flight)
-        print("Coordinates: (", self.coor_alt[0], ", " ,self.coor_alt[1], ")")
+        print("Coordinates: (", self.coor_alt[0], ", ", self.coor_alt[1], ")")
         print("Altitude: ", self.coor_alt[2])
 
         infoStr = "IMEI: " + self.imei + " Date: " + self.latest_flight
@@ -110,6 +114,7 @@ class Balloon_Coordinates:
         return lastTime[0] - lastTime[1]
 
     pass
+
 
 # import requests
 # import time
