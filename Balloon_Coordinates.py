@@ -78,6 +78,7 @@ class Balloon_Coordinates:
             return []
 
         data = req.json()
+        print(data) # for debugging server problem, will print a lot
 
         # print(data['data'][-1][3])
 
