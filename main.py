@@ -49,6 +49,8 @@ import numpy as np
 # todo: clean up this code and better document for HASP
 
 # todo: figure out why requesting 5560 now returns no data (server side?)
+# it seems that requests from 2022 are not returning anything from the server? try turning on 420 and grabbing data
+# 5520 also returns nothing from server
 
 
 DEBUG = False

@@ -73,12 +73,13 @@ class Balloon_Coordinates:
         # returns a list containing the lat, long, and alt of the latest ping from the selected IMEI
         try:
             req = requests.get("https://borealis.rci.montana.edu/flight?uid={}".format(self.uid))
+            print("https://borealis.rci.montana.edu/flight?uid={}".format(self.uid))
         except requests.exceptions.RequestException:
             print("couldn't get updated position (no internet probably)")
             return []
 
         data = req.json()
-        print(data) # for debugging server problem, will print a lot
+        # print(data) # for debugging server problem, will print a lot
 
         # print(data['data'][-1][3])
 
