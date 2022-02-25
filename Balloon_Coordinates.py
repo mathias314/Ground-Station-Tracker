@@ -20,6 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -------------------------------------------------------------------------------
 """
+from calendar import timegm
 
 import requests
 import time
@@ -43,8 +44,7 @@ class Balloon_Coordinates:
         self.latest_flight = req.json()[-1]
 
         # Define UID
-        flightTime = int(
-            time.mktime(time.strptime(self.latest_flight, "%Y-%m-%d")) - 21600 - Balloon_Coordinates.BOREALIS_EPOCH)
+        flightTime = timegm(time.strptime(self.latest_flight, "%Y-%m-%d")) - Balloon_Coordinates.BOREALIS_EPOCH
         self.uid = (int(flightTime) << 24) | int(self.imei[8:])
 
         return
