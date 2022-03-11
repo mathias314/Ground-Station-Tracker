@@ -41,19 +41,13 @@ import statistics
 import numpy as np
 
 
-# todo: handle backlash for predictive tracking
-# todo: calibrate with IMU
+# todo: implement imu for calibration and predictive alg
+
+# todo: implement calibration using a basic compass
 
 # todo: make sure display window problems are fixed (or exe works everywhere) (test on more computers)
 
-# todo: clean up this code and better document for HASP
-
-# todo: figure out why requesting 5560 now returns no data (server side?)
-# it seems that requests from 2022 are not returning anything from the server? try turning on 420 and grabbing data
-# 5520 also returns nothing from server
-
-
-DEBUG = False
+# todo: clean up this code and better document
 
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -382,12 +376,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         print("\n")
 
         if self.arduinoConnected and self.IMEIAssigned and self.calibrated and self.GSLocationSet:
-            if self.predictingTrack and not DEBUG:
+            if self.predictingTrack:
                 self.statusBox.setPlainText("Starting tracking with predictions!")
                 self.callPredictTrack()
-            elif self.predictingTrack and DEBUG:
-                self.statusBox.setPlainText("Tracking with predictions debug mode")
-                self.callDebugPredictTrack()
             else:
                 self.statusBox.setPlainText("Starting tracking!")
                 print("starting tracking!")
@@ -432,27 +423,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.worker.finished.connect(self.trackThread.quit)  # pycharm has bug, this is correct
         self.worker.finished.connect(self.worker.deleteLater)  # https://youtrack.jetbrains.com/issue/PY-24183?_ga=2.240219907.1479555738.1625151876-2014881275.1622661488
-        self.trackThread.finished.connect(self.trackThread.deleteLater)
-
-        self.startButton.setEnabled(False)
-        self.predictionStartButton.setEnabled(False)
-        self.calibrateButton.setEnabled(False)
-
-        self.trackThread.start()
-
-    def callDebugPredictTrack(self):
-        self.tracking = True
-        self.statusBox.setPlainText("Tracking with predictions (debug)!")
-        self.trackThread = QThread()
-        self.worker = Worker()
-
-        self.worker.moveToThread(self.trackThread)
-
-        self.trackThread.started.connect(self.worker.debugPredictTrack)
-
-        self.worker.finished.connect(self.trackThread.quit)  # pycharm has bug, this is correct
-        self.worker.finished.connect(
-            self.worker.deleteLater)  # https://youtrack.jetbrains.com/issue/PY-24183?_ga=2.240219907.1479555738.1625151876-2014881275.1622661488
         self.trackThread.finished.connect(self.trackThread.deleteLater)
 
         self.startButton.setEnabled(False)
@@ -544,9 +514,6 @@ class Worker(QObject):
         # go to the predicted elevation/azimuth
 
         print("In predictTrack")
-        if DEBUG:
-            self.debugPredictTrack()
-            return
 
         timer = time.time()
         newestLocation = MainWindow.Balloon.get_coor_alt()
@@ -644,140 +611,8 @@ class Worker(QObject):
         self.finished.emit()
         return
 
-    def debugPredictTrack(self):
-        # implement normal predict track function
-        # replace timediff check from website to using the list
-        # if the current time diff is less than the next entry in list, make prediction
-        # otherwise go to the next location in the csv file
-
-        print("In debug predict track")
-        timeDiffs = fakeIridium.getTimeDiffs()
-        print(timeDiffs)
-
-        lats = fakeIridium.getLats()
-        print(lats)
-        longs = fakeIridium.getLongs()
-        print(longs)
-        alts = fakeIridium.getAlts()
-        print(alts)
-
-        timer = time.time()
-        timeDiffCounter = time.time()
-        index = 1
-
-        calculations = open("predictedOutput.csv", "w")
-        csvWriter = csv.writer(calculations)
-        calcFields = ["Distance", "Azimuth", "Elevation", "r/p"]
-        csvWriter.writerow(calcFields)
-
-        azimuthList = []
-        elevationList = []
-
-        newestLocation = oldLocation = [lats[1], longs[1], alts[1]]
-
-        i = 1
-
-        while MainWindow.predictingTrack:
-            if (time.time() - timer) > 1:
-                timer = time.time()
-
-                if (time.time() - timeDiffCounter) < timeDiffs[index]:
-                    # need to predict!
-                    print("predicted output")
-                    timeDelta = timeDiffs[index]
-                    print("The time delta is: " + str(timeDelta))
-
-                    latStep = (float(newestLocation[0]) - float(oldLocation[0])) / float(timeDelta)
-                    print("lat step: " + str(latStep))
-                    longStep = (float(newestLocation[1]) - float(oldLocation[1])) / float(timeDelta)
-                    print("long step: " + str(longStep))
-                    altStep = (float(newestLocation[2]) - float(oldLocation[2])) / float(timeDelta)
-                    print("alt step: " + str(altStep))
-
-                    Tracking_Calc = trackMath(MainWindow.GSLong, MainWindow.GSLat, MainWindow.GSAlt,
-                                              float(newestLocation[1]) + (i * longStep), float(newestLocation[0]) + (i * latStep),
-                                              float(newestLocation[2]) + (i * altStep))
-
-                    distance = Tracking_Calc.distance
-                    print("distance :" + str(distance))
-                    newElevation = Tracking_Calc.elevation()
-                    print("elevation: " + str(newElevation))
-                    newAzimuth = Tracking_Calc.azimuth()
-                    print("azimuth: " + str(newAzimuth))
-
-                    elevationList.append(newElevation)
-                    azimuthList.append(newAzimuth)
-
-                    # keep average of azimuth/elevations
-                    # if new calculation is outlier, throw it out, don't go to new spot
-                    # reset average between pings
-                    # alternatively, implement some type of filter (savitzky golay, kalman, etc)
-
-                    # if newElevation > np.mean(elevationList) + (2 * np.std(elevationList)) or newElevation < np.mean(
-                    #         elevationList) - (2 * np.std(elevationList)) \
-                    #         or newAzimuth > np.mean(azimuthList) + (2 * np.std(azimuthList)) or newAzimuth < np.mean(
-                    #     azimuthList) - (2 * np.std(azimuthList)):
-                    #     print("outlier detected! ")
-                    #     pass
-                    # else:
-
-                    self.calcSignal.connect(MainWindow.displayCalculations)
-                    self.calcSignal.emit(distance, newAzimuth, newElevation)
-
-                    row = [distance, newAzimuth, newElevation, "p"]
-                    csvWriter.writerow(row)
-
-                    MainWindow.GSArduino.move_position(newAzimuth, newElevation)
-
-                    i += 1
-
-                    print("\n")
-
-                else:
-                    # go to the new actual spot
-                    index += 1
-                    oldLocation = newestLocation
-                    newestLocation = [lats[index], longs[index], alts[index]]
-
-                    # note that trackMath takes arguments as long, lat, altitude
-                    Tracking_Calc = trackMath(MainWindow.GSLong, MainWindow.GSLat, MainWindow.GSAlt, float(newestLocation[1]),
-                                              float(newestLocation[0]), float(newestLocation[2]))
-
-                    distance = Tracking_Calc.distance
-                    newElevation = Tracking_Calc.elevation()
-                    newAzimuth = Tracking_Calc.azimuth()
-
-                    self.calcSignal.connect(
-                        MainWindow.displayCalculations)  # this seems to happen a lot for some reason
-                    self.calcSignal.emit(distance, newAzimuth, newElevation)
-
-                    print("Got new real ping!")
-                    print("distance: " + str(distance))
-                    print("elevation: " + str(newElevation))
-                    print("azimuth: " + str(newAzimuth) + "\n")
-
-                    MainWindow.GSArduino.move_position(newAzimuth, newElevation)
-
-                    row = [distance, newAzimuth, newElevation, "r"]
-                    csvWriter.writerow(row)
-
-                    i = 1
-                    azimuthList = []
-                    elevationList = []
-
-                    index += 1
-
-                    timeDiffCounter = time.time()
-
-        print("All done tracking with predictions! :)")
-        calculations.close()
-
-        return
-
 
 if __name__ == "__main__":
-    if DEBUG:
-        import fakeIridium
 
     # standard pyqt5 main
     # sets up and shows the window
