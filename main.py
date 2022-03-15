@@ -49,6 +49,11 @@ import numpy as np
 
 # todo: clean up this code and better document
 
+# todo: buy real compass and try calibrating with that (and do more tests with phone compass)
+# todo: try to stop imu from drifting (different calibration / settings?)
+# todo: better wiring for imu
+# todo: compare the imu with sun location more
+
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     # This class connects functionality to buttons in the GUI
@@ -494,6 +499,8 @@ class Worker(QObject):
                     self.calcSignal.connect(MainWindow.displayCalculations)  # this seems to happen a lot for some reason
                     self.calcSignal.emit(distance, newAzimuth, newElevation)
 
+                    # send imu position first, so ground station knows where it is
+                    # then send new position to move to
                     MainWindow.GSArduino.move_position(newAzimuth, newElevation)
 
                     self.i += 1
