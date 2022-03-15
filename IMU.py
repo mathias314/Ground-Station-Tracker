@@ -35,11 +35,8 @@ class IMU:
         self.attempt_num = 0
         return
 
-    def requestData(self):
+    def readData(self):
         # get the current elevation and azimuth from imu
-        message = "R"
-        self.COM_Port.write(bytes(message, "utf-8"))
-        time.sleep(.05)
 
         serialData = self.COM_Port.readline()
         decodedData = serialData.decode('ascii')

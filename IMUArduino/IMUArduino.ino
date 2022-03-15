@@ -14,10 +14,7 @@ void setup() {
 }
 
 void loop() {
-  if(Serial.available() > 0)
-  {
-      SerialRX(); //call the function
-  }
+    SerialRX(); //call the function
 }
 
 
