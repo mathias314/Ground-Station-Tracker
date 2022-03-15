@@ -31,6 +31,7 @@ import sys
 from Balloon_Coordinates import Balloon_Coordinates
 from satelliteTrackingMath import trackMath
 from Ground_Station_Arduino import Ground_Station_Arduino
+from IMU import IMU
 import serial.tools.list_ports
 import time
 from pylab import *
@@ -98,6 +99,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.portNames = []
         self.comPortCounter = 0
         self.refreshArduinoList()
+
+        self.IMU = IMU(self.portNames[0], 115200)  # set up IMU class (probably have to change the port name)
 
         self.confirmIMEIButton.clicked.connect(self.assignIMEI)
 
@@ -501,6 +504,9 @@ class Worker(QObject):
 
                     # send imu position first, so ground station knows where it is
                     # then send new position to move to
+                    currPos = MainWindow.IMU.requestData()
+                    MainWindow.GSArduino.calibrate(currPos[0], currPos[1])
+
                     MainWindow.GSArduino.move_position(newAzimuth, newElevation)
 
                     self.i += 1

@@ -1,4 +1,4 @@
-// todo: test removing backlash
+// todo: add function to read in imu values
 
 /*
 -------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ void waitForPosition2(int32_t targetPosition)
 
 void movePanAndTilt(String bytes_in)
 {
- for (int index = 1; index < bytes_in.length(); index++)
+  for (int index = 1; index < bytes_in.length(); index++)
       {
         if (bytes_in[index] == ',')
         {
