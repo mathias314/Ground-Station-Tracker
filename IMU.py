@@ -38,13 +38,26 @@ class IMU:
     def readData(self):
         # get the current elevation and azimuth from imu
 
-        serialData = self.COM_Port.readline()
-        decodedData = serialData.decode('ascii')
+        self.COM_Port.flushInput()
 
-        print(decodedData)
+        decodedData = ""
 
-        currPos = decodedData.split(',')
+        currPos = []
 
-        print(currPos)
+        while len(currPos) < 2:
 
-        return currPos
+            serialData = self.COM_Port.readline()
+            try:
+                decodedData = serialData.decode('ascii')
+            except: # if error decoding serial data try again
+                decodedData = ""
+
+            # print(decodedData)
+            if decodedData:
+                currPos = decodedData.split(',')
+
+        convertedCurrPos = [float(currPos[0]), float(currPos[1])]
+
+        print(convertedCurrPos)
+
+        return convertedCurrPos

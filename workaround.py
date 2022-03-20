@@ -16,7 +16,7 @@ def calcs():
         portNames.append("{}".format(port))
         index += 1
 
-    user_port = int(input("Choose Port: "))
+    user_port = int(input("Choose GS Port: "))
     print("{}".format(portNames[user_port]))
 
     GSMotors = Ground_Station_Arduino(portNames[user_port], 9600)

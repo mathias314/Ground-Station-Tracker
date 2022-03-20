@@ -95,8 +95,12 @@ void SerialRX() {
 //                Serial.print(" Pitch:");Serial.print(pitch); 
 //                Serial.print(" Yaw");   Serial.print(yaw); 
 
-                String currPos = String(yaw) + ',' + String(pitch);
-                Serial.println(currPos);
+                if(true)
+                {
+                  Serial.flush();
+                  String currPos = String(yaw) + ',' + String(pitch);
+                  Serial.println(currPos);
+                }
             }
         }break;
         case EP_CMD_GRAVITY_:{
