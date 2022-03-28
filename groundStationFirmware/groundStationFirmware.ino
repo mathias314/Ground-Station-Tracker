@@ -238,7 +238,7 @@ void adjustTiltDown()
 void eStop()
 {
   tic1.setTargetPosition(tic1.getCurrentPosition());
-  tic2.setTargetPosition(tic1.getCurrentPosition());
+  tic2.setTargetPosition(tic2.getCurrentPosition());
 
   // maybe have to change the current azimuth/elevation after estop?
 }

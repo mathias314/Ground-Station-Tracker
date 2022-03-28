@@ -69,7 +69,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.arduinoConnected = False
         self.IMEIAssigned = False
         self.GSLocationSet = False
-        self.calibrated = False
+        self.calibrated = True # as IMU will replace calibration
 
         self.tracking = False
 
@@ -542,7 +542,7 @@ class Worker(QObject):
         elevationList = []
 
         while MainWindow.predictingTrack:
-            if (time.time() - timer) > 1:
+            if (time.time() - timer) > 3:
                 timer = time.time()
                 currData = MainWindow.Balloon.get_coor_alt()
 
@@ -574,7 +574,7 @@ class Worker(QObject):
                             or newAzimuth > np.mean(azimuthList) + (2 * np.std(azimuthList)) or newAzimuth < np.mean(azimuthList) - (2 * np.std(azimuthList)):
                         print("outlier detected! ")
                         pass
-                    else:
+                    else: # new calculation is not an outlier
                         print("distance: " + str(distance))
                         print("elevation: " + str(newElevation))
                         print("azimuth: " + str(newAzimuth) + "\n")
@@ -585,9 +585,10 @@ class Worker(QObject):
                         row = [distance, newAzimuth, newElevation, "p"]
                         csvWriter.writerow(row)
 
-                        # MainWindow.GSArduino.move_position(newAzimuth, newElevation)
-
-                    i += 1
+                        currPos = MainWindow.IMU.readData()
+                        MainWindow.GSArduino.calibrate(currPos[0], currPos[1])  # this will send latest imu pos to gs
+                        MainWindow.GSArduino.move_position(newAzimuth, newElevation)
+                        i += 1
 
                 else:
                     # go to the new actual spot
@@ -610,7 +611,9 @@ class Worker(QObject):
                     print("elevation: " + str(newElevation))
                     print("azimuth: " + str(newAzimuth) + "\n")
 
-                    # MainWindow.GSArduino.move_position(newAzimuth, newElevation)
+                    currPos = MainWindow.IMU.readData()
+                    MainWindow.GSArduino.calibrate(currPos[0], currPos[1])  # this will send latest imu pos to gs
+                    MainWindow.GSArduino.move_position(newAzimuth, newElevation)
 
                     row = [distance, newAzimuth, newElevation, "r"]
                     csvWriter.writerow(row)
