@@ -388,7 +388,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             print("IMEI not assigned")
             self.statusBox.setPlainText("Please select a balloon")
 
-        if self.arduinoConnected:
+        if self.arduinoConnected and self.IMUArduinoConnected:
             print("Arduino connected!")
         else:
             print("Please connect to the Arduino")
@@ -396,7 +396,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         print("\n")
 
-        if self.arduinoConnected and self.IMEIAssigned and self.calibrated and self.GSLocationSet:
+        if self.arduinoConnected and self.IMUArduinoConnected and self.IMEIAssigned and self.GSLocationSet:
             if self.predictingTrack:
                 self.statusBox.setPlainText("Starting tracking with predictions!")
                 self.callPredictTrack()
@@ -584,25 +584,27 @@ class Worker(QObject):
                     # reset average between pings
                     # alternatively, implement some type of filter (savitzky golay, kalman, etc)
 
+                    """
                     if newElevation > np.mean(elevationList) + (2 * np.std(elevationList)) or newElevation < np.mean(elevationList) - (2 * np.std(elevationList)) \
                             or newAzimuth > np.mean(azimuthList) + (2 * np.std(azimuthList)) or newAzimuth < np.mean(azimuthList) - (2 * np.std(azimuthList)):
                         print("outlier detected! ")
                         pass
                     else: # new calculation is not an outlier
-                        print("distance: " + str(distance))
-                        print("elevation: " + str(newElevation))
-                        print("azimuth: " + str(newAzimuth) + "\n")
+                    """
+                    print("distance: " + str(distance))
+                    print("elevation: " + str(newElevation))
+                    print("azimuth: " + str(newAzimuth) + "\n")
 
-                        self.calcSignal.connect(MainWindow.displayCalculations)
-                        self.calcSignal.emit(distance, newAzimuth, newElevation)
+                    self.calcSignal.connect(MainWindow.displayCalculations)
+                    self.calcSignal.emit(distance, newAzimuth, newElevation)
 
-                        row = [distance, newAzimuth, newElevation, "p"]
-                        csvWriter.writerow(row)
+                    row = [distance, newAzimuth, newElevation, "p"]
+                    csvWriter.writerow(row)
 
-                        currPos = MainWindow.IMUArduino.readData()
-                        MainWindow.GSArduino.calibrate(currPos[0], currPos[1])  # this will send latest imu pos to gs
-                        MainWindow.GSArduino.move_position(newAzimuth, newElevation)
-                        i += 1
+                    currPos = MainWindow.IMUArduino.readData()
+                    MainWindow.GSArduino.calibrate(currPos[0], currPos[1])  # this will send latest imu pos to gs
+                    MainWindow.GSArduino.move_position(newAzimuth, newElevation)
+                    i += 1
 
                 else:
                     # go to the new actual spot
