@@ -42,18 +42,11 @@ import statistics
 import numpy as np
 
 
-# todo: implement imu for calibration and predictive alg
-
-# todo: implement calibration using a basic compass
+# todo: declination adjustment (for compass calibration and imu tracking)
 
 # todo: make sure display window problems are fixed (or exe works everywhere) (test on more computers)
 
 # todo: clean up this code and better document
-
-# todo: buy real compass and try calibrating with that (and do more tests with phone compass)
-# todo: try to stop imu from drifting (different calibration / settings?)
-# todo: better wiring for imu
-# todo: compare the imu with sun location more
 
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -67,6 +60,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.IMEIList = Balloon_Coordinates.list_IMEI()
 
         self.arduinoConnected = False
+        self.IMUArduinoConnected = False
         self.IMEIAssigned = False
         self.GSLocationSet = False
         self.calibrated = True # as IMU will replace calibration
@@ -74,6 +68,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tracking = False
 
         self.GSArduino = None  # classes will be instantiated later
+        self.IMUArduino = None
         self.Balloon = None
 
         self.trackThread = None
@@ -100,26 +95,26 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.comPortCounter = 0
         self.refreshArduinoList()
 
-        self.IMU = IMU(self.portNames[1], 115200)  # set up IMU class (probably have to change the port name)
-
         self.confirmIMEIButton.clicked.connect(self.assignIMEI)
 
         self.GPSRequestButton.clicked.connect(self.getGSLocation)
         self.confirmGSLocationButton.clicked.connect(self.setGSLocation)
 
-        self.calibrateButton.clicked.connect(self.calibrate)
+        # self.calibrateButton.clicked.connect(self.calibrate)
 
         self.refreshCOMPortsButton.clicked.connect(self.refreshArduinoList)
+
         self.connectToArduinoButton.clicked.connect(self.connectToArduino)
+        self.connectToIMUArduinoButton.clicked.connect(self.connectToIMUArduino)
 
         self.degreesPerClickBox.setCurrentIndex(1)
-        self.COMPortComboBox.setCurrentIndex(self.comPortCounter - 1)
+        self.IMUPortComboBox.setCurrentIndex(1)
         self.tiltUpButton.clicked.connect(self.tiltUp)
         self.tiltDownButton.clicked.connect(self.tiltDown)
         self.panCounterClockwiseButton.clicked.connect(self.panClockwise)
         self.panClockwiseButton.clicked.connect(self.panCounterClockwise)
 
-        self.calculateStartingPosButton.clicked.connect(self.getStartingPos)
+        # self.calculateStartingPosButton.clicked.connect(self.getStartingPos)
 
         self.backToSunButton.clicked.connect(self.returnToSun)
 
@@ -158,12 +153,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def refreshArduinoList(self):
         # this function searches the list of COM ports, and adds devices that it finds to the COM port combobox
         self.COMPortComboBox.clear()
+        self.IMUPortComboBox.clear()
         self.ports = serial.tools.list_ports.comports()
         self.portNames = []
         self.comPortCounter = 0
         for port, desc, hwid in sorted(self.ports):
             # self.COMPortComboBox.addItem("[{}] {}: {}".format(i, port, desc))
             self.COMPortComboBox.addItem(desc)
+            self.IMUPortComboBox.addItem(desc)
             self.portNames.append("{}".format(port))
             self.comPortCounter += 1
 
@@ -180,6 +177,22 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.statusBox.setPlainText("Arduino already connected")
         else:
             self.statusBox.setPlainText("Unable to connect to Arduino")
+
+        return
+
+    def connectToIMUArduino(self):
+        # checks if arduino is selected, and if the connection is not already made, instantiates an instance of
+        # the IMU arduino class
+        # if an arduino is connected, or one is not selected, the function returns
+        if not self.IMUArduinoConnected and self.IMUPortComboBox.currentText():
+            self.IMUArduino = IMU(self.portNames[self.IMUPortComboBox.currentIndex()], 115200)
+            self.statusBox.setPlainText("connected to IMU arduino!")
+            self.IMUArduinoConnected = True
+        elif self.IMUArduinoConnected:
+            print("IMU Arduino already connected")
+            self.statusBox.setPlainText("IMU Arduino already connected")
+        else:
+            self.statusBox.setPlainText("Unable to connect to IMU Arduino")
 
         return
 
@@ -413,7 +426,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.startButton.setEnabled(False)
         self.predictionStartButton.setEnabled(False)
-        self.calibrateButton.setEnabled(False)
+        # self.calibrateButton.setEnabled(False)
 
         self.trackThread.start()
 
@@ -435,7 +448,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.startButton.setEnabled(False)
         self.predictionStartButton.setEnabled(False)
-        self.calibrateButton.setEnabled(False)
+        # self.calibrateButton.setEnabled(False)
 
         self.trackThread.start()
 
@@ -446,7 +459,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.predictingTrack = False
             self.startButton.setEnabled(True)
             self.predictionStartButton.setEnabled(True)
-            self.calibrateButton.setEnabled(True)
+            # self.calibrateButton.setEnabled(True)
             self.statusBox.setPlainText("tracking stopped")
         return
 
@@ -455,8 +468,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.GSArduino.sendEStop()
             self.stopTracking()
 
-            self.statusBox.setPlainText("E-Stop triggered \n Please recalibrate before starting again")
-            print("E-Stopped must recalibrate before starting tracking")
+            self.statusBox.setPlainText("E-Stop triggered")
+            print("E-Stopped")
 
         return
 
@@ -481,6 +494,7 @@ class Worker(QObject):
         # checks for updated position every 5 seconds
         # if a new position has been found, calculate the azimuth and elevation to point at the new location
         # send the motors a command to move to the new position
+        print("in track")
         timer = time.time() - 4
         while MainWindow.tracking:
             if (time.time() - timer) > 5:
@@ -504,7 +518,7 @@ class Worker(QObject):
 
                     # send imu position first, so ground station knows where it is
                     # then send new position to move to
-                    currPos = MainWindow.IMU.readData()
+                    currPos = MainWindow.IMUArduino.readData()
                     MainWindow.GSArduino.calibrate(currPos[0], currPos[1])  # this will send latest imu pos to gs
 
                     MainWindow.GSArduino.move_position(newAzimuth, newElevation)
@@ -585,7 +599,7 @@ class Worker(QObject):
                         row = [distance, newAzimuth, newElevation, "p"]
                         csvWriter.writerow(row)
 
-                        currPos = MainWindow.IMU.readData()
+                        currPos = MainWindow.IMUArduino.readData()
                         MainWindow.GSArduino.calibrate(currPos[0], currPos[1])  # this will send latest imu pos to gs
                         MainWindow.GSArduino.move_position(newAzimuth, newElevation)
                         i += 1

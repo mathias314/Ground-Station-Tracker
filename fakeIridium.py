@@ -22,7 +22,7 @@ def getTimeDiffs():
         uglyDate = line[1]
         currTime = datetime.strptime(uglyDate, "%Y-%m-%dT%H:%M:%SZ")
         # print((currTime - oldTime).total_seconds())
-        fullTimeDiff.append( (currTime - oldTime).total_seconds() )
+        fullTimeDiff.append( (currTime - oldTime).total_seconds())
 
         oldTime = currTime
         i += 1
