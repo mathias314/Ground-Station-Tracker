@@ -341,21 +341,16 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def returnToSun(self):
-        if self.arduinoConnected and self.GSLocationSet and self.calibrated:
+        if self.arduinoConnected and self.GSLocationSet and self.IMUArduinoConnected:
             now = datetime.utcnow()
             az, elev = sunpos(now, self.GSLat, self.GSLong, self.GSAlt)[:2]  # discard RA, dec, H
 
+            currPos = self.IMUArduino.readData()
+            self.GSArduino.calibrate(currPos[0], currPos[1])
             self.GSArduino.move_position(az, elev)
 
-            self.startingAzimuth = az
-            self.startingElevation = elev
-
-            self.startingAzimuthBox.setPlainText(str(self.startingAzimuth))
-            self.startingElevationBox.setPlainText(str(self.startingElevation))
-            self.statusBox.setPlainText("at new sun position")
-
         else:
-            self.statusBox.setPlainText("Ensure that arduino is connected, GS location is set and calibration is set")
+            self.statusBox.setPlainText("Ensure that Arduinos are connected, and GS location is set")
             print("Cannot point back at the sun")
 
         return

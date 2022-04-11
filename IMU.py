@@ -22,7 +22,6 @@ SOFTWARE.
 
 import serial
 import serial.tools.list_ports
-import time
 
 
 class IMU:
@@ -31,8 +30,9 @@ class IMU:
         self.Port_Name = COM_Port
         self.Baudrate = baudrate
         self.COM_Port = serial.Serial(port=self.Port_Name, baudrate=self.Baudrate, timeout=.1)
-        self.Coordinates = []
-        self.attempt_num = 0
+
+        self.declination = -11.53333
+
         return
 
     def readData(self):
@@ -56,7 +56,7 @@ class IMU:
             if decodedData:
                 currPos = decodedData.split(',')
 
-        convertedCurrPos = [float(currPos[0]), float(currPos[1])]
+        convertedCurrPos = [float(currPos[0]) + self.declination, float(currPos[1])]  # need to adjust to true north
 
         print(convertedCurrPos)
 
