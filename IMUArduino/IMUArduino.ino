@@ -1,3 +1,10 @@
+// Wiring Setup:
+// Arduino -> IMU
+// GND -> GND (connect common ground to both ground pins on IMU)
+// 5V -> 5V
+// Pin 10 -> TXD (yellow wire on IMU)
+// Pin 11 -> RXD (green wire on IMU)
+
 #include <SoftwareSerial.h>
 
 // Motion Module Interface:
