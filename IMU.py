@@ -31,7 +31,8 @@ class IMU:
         self.Baudrate = baudrate
         self.COM_Port = serial.Serial(port=self.Port_Name, baudrate=self.Baudrate, timeout=.1)
 
-        self.declination = 11.53333
+        # self.declination = -7.266667  # rapid city declination
+        self.declination = -11.53333  # bozeman declination
 
         return
 
@@ -56,8 +57,8 @@ class IMU:
             # print(decodedData)
             if decodedData:
                 currPos = decodedData.split(',')
-                try:
-                    convertedCurrPos = [float(currPos[0]) + self.declination,
+                try:  # adding 90 seems goofy, but it seems to be working for mat
+                    convertedCurrPos = [(float(currPos[0]) + self.declination + 90) % 360,
                                         float(currPos[1])]  # need to adjust to true north
                 except ValueError:
                     convertedCurrPos = []

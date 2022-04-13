@@ -316,6 +316,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         return
 
+    """
     def calibrate(self):
         # sends the GSArduino class the starting azimuth and elevation
         if self.arduinoConnected:
@@ -339,11 +340,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.statusBox.setPlainText("Not connected to arduino")
 
         return
+    """
 
     def returnToSun(self):
         if self.arduinoConnected and self.GSLocationSet and self.IMUArduinoConnected:
             now = datetime.utcnow()
             az, elev = sunpos(now, self.GSLat, self.GSLong, self.GSAlt)[:2]  # discard RA, dec, H
+            print("sun az: " + str(az) + " sun elev: " + str(elev))
 
             currPos = self.IMUArduino.readData()
             self.GSArduino.calibrate(currPos[0], currPos[1])
