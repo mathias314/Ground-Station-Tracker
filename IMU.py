@@ -31,7 +31,7 @@ class IMU:
         self.Baudrate = baudrate
         self.COM_Port = serial.Serial(port=self.Port_Name, baudrate=self.Baudrate, timeout=.1)
 
-        self.declination = -11.53333
+        self.declination = 11.53333
 
         return
 
