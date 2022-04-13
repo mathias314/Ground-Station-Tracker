@@ -43,8 +43,9 @@ class IMU:
         decodedData = ""
 
         currPos = []
+        convertedCurrPos = []
 
-        while len(currPos) < 2:
+        while len(convertedCurrPos) < 2:
 
             serialData = self.COM_Port.readline()
             try:
@@ -55,9 +56,11 @@ class IMU:
             # print(decodedData)
             if decodedData:
                 currPos = decodedData.split(',')
-
-        convertedCurrPos = [float(currPos[0]) + self.declination, float(currPos[1])]  # need to adjust to true north
+                try:
+                    convertedCurrPos = [float(currPos[0]) + self.declination,
+                                        float(currPos[1])]  # need to adjust to true north
+                except ValueError:
+                    convertedCurrPos = []
 
         print(convertedCurrPos)
-
         return convertedCurrPos
