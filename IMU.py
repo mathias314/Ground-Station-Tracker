@@ -60,7 +60,7 @@ class IMU:
                 try:  # adding 90 seems goofy, but it seems to be working for mat
                     convertedCurrPos = [float(currPos[0]) + self.declination,
                                         float(currPos[1])]  # need to adjust to true north
-                except ValueError:
+                except:
                     convertedCurrPos = []
 
         print(convertedCurrPos)
