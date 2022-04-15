@@ -545,10 +545,10 @@ class Worker(QObject):
         oldLocation = MainWindow.Balloon.get_coor_alt()
         i = 1
 
-        calculations = open("predictedOutput.csv", "w")
-        csvWriter = csv.writer(calculations)
-        calcFields = ["Distance", "Azimuth", "Elevation", "r/p"]
-        csvWriter.writerow(calcFields)
+        # calculations = open("predictedOutput.csv", "w")
+        # csvWriter = csv.writer(calculations)
+        # calcFields = ["Distance", "Azimuth", "Elevation", "r/p"]
+        # csvWriter.writerow(calcFields)
 
         azimuthList = []
         elevationList = []
@@ -596,12 +596,14 @@ class Worker(QObject):
                     self.calcSignal.connect(MainWindow.displayCalculations)
                     self.calcSignal.emit(distance, newAzimuth, newElevation)
 
-                    row = [distance, newAzimuth, newElevation, "p"]
-                    csvWriter.writerow(row)
+                    # row = [distance, newAzimuth, newElevation, "p"]
+                    # csvWriter.writerow(row)
 
                     currPos = MainWindow.IMUArduino.readData()
                     MainWindow.GSArduino.calibrate(currPos[0], currPos[1])  # this will send latest imu pos to gs
+
                     MainWindow.GSArduino.move_position(newAzimuth, newElevation)
+
                     i += 1
 
                 else:
@@ -625,19 +627,20 @@ class Worker(QObject):
                     print("elevation: " + str(newElevation))
                     print("azimuth: " + str(newAzimuth) + "\n")
 
-                    currPos = MainWindow.IMU.readData()
+                    currPos = MainWindow.IMUArduino.readData()
                     MainWindow.GSArduino.calibrate(currPos[0], currPos[1])  # this will send latest imu pos to gs
+
                     MainWindow.GSArduino.move_position(newAzimuth, newElevation)
 
-                    row = [distance, newAzimuth, newElevation, "r"]
-                    csvWriter.writerow(row)
+                    # row = [distance, newAzimuth, newElevation, "r"]
+                    # csvWriter.writerow(row)
 
                     i = 1
                     azimuthList = []
                     elevationList = []
 
         print("All done tracking with predictions! :)")
-        calculations.close()
+        # calculations.close()
         self.finished.emit()
         return
 

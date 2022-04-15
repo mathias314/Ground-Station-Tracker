@@ -109,7 +109,7 @@ class Balloon_Coordinates:
 
         lastTime = [data['data'][-1][2], data['data'][-2][2]]
 
-        print(lastTime[0])
+        # print(lastTime[0])
 
         print(lastTime[0] - lastTime[1])
         # return lastTime[0] - lastTime[1]
