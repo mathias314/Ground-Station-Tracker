@@ -42,11 +42,7 @@ import statistics
 import numpy as np
 
 
-# todo: declination adjustment (for compass calibration and imu tracking)
-
-# todo: make sure display window problems are fixed (or exe works everywhere) (test on more computers)
-
-# todo: clean up this code and better document
+# todo: document!!
 
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):

@@ -15,6 +15,10 @@ EasyProfile          eP(&eOD);
 
 SoftwareSerial softSerial(10, 11); 
 
+float yawAvg = 0;
+float pitchAvg = 0;
+int count = 0;
+
 void setup() {
   Serial.begin(115200);     // For print()
   softSerial.begin(115200);  // For communication with the Motion Module
@@ -91,22 +95,26 @@ void SerialRX() {
                 float roll  = ep_RPY.roll;
                 float pitch = ep_RPY.pitch;
                 float yaw   = ep_RPY.yaw;
+
                 uint32 timeStamp = ep_RPY.timeStamp;      //           TimeStamp indicates the time point (since the Module has been powered on),
                                                           //           when this particular set of Roll-Pitch-Yaw was calculated. (Unit: uS)
                                                           //           Note that overflow will occure when the uint32 type reaches its maximum value.
                 uint32 deviceId  = ep_RPY.header.fromId;  //           The ID indicates from wich IMU Module the data comes from.
 
+                count++;
+                yawAvg = yawAvg + yaw;
+                pitchAvg = pitchAvg + pitch;
 
-                // Display the data:
-//                Serial.print("Roll:");  Serial.print(roll); 
-//                Serial.print(" Pitch:");Serial.print(pitch); 
-//                Serial.print(" Yaw");   Serial.print(yaw); 
-
-                if(true)
+                if(count >= 5)
                 {
                   Serial.flush();
+                  yaw = yawAvg / count;
+                  pitch = pitchAvg / count;
                   String currPos = String(yaw) + ',' + String(pitch);
                   Serial.println(currPos);
+                  yawAvg = 0;
+                  pitchAvg = 0;
+                  count = 0;
                 }
             }
         }break;
