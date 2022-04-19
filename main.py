@@ -41,12 +41,6 @@ import statistics
 import numpy as np
 
 
-# todo: implement imu for calibration and predictive alg
-
-# todo: implement calibration using a basic compass
-
-# todo: make sure display window problems are fixed (or exe works everywhere) (test on more computers)
-
 # todo: clean up this code and better document
 
 
@@ -557,6 +551,7 @@ class Worker(QObject):
                     # reset average between pings
                     # alternatively, implement some type of filter (savitzky golay, kalman, etc)
 
+                    """
                     if newElevation > np.mean(elevationList) + (2 * np.std(elevationList)) or newElevation < np.mean(elevationList) - (2 * np.std(elevationList)) \
                             or newAzimuth > np.mean(azimuthList) + (2 * np.std(azimuthList)) or newAzimuth < np.mean(azimuthList) - (2 * np.std(azimuthList)):
                         print("outlier detected! ")
@@ -565,14 +560,14 @@ class Worker(QObject):
                         print("distance: " + str(distance))
                         print("elevation: " + str(newElevation))
                         print("azimuth: " + str(newAzimuth) + "\n")
+                    """
+                    self.calcSignal.connect(MainWindow.displayCalculations)
+                    self.calcSignal.emit(distance, newAzimuth, newElevation)
 
-                        self.calcSignal.connect(MainWindow.displayCalculations)
-                        self.calcSignal.emit(distance, newAzimuth, newElevation)
+                    row = [distance, newAzimuth, newElevation, "p"]
+                    csvWriter.writerow(row)
 
-                        row = [distance, newAzimuth, newElevation, "p"]
-                        csvWriter.writerow(row)
-
-                        # MainWindow.GSArduino.move_position(newAzimuth, newElevation)
+                    MainWindow.GSArduino.move_position(newAzimuth, newElevation)
 
                     i += 1
 
@@ -597,7 +592,7 @@ class Worker(QObject):
                     print("elevation: " + str(newElevation))
                     print("azimuth: " + str(newAzimuth) + "\n")
 
-                    # MainWindow.GSArduino.move_position(newAzimuth, newElevation)
+                    MainWindow.GSArduino.move_position(newAzimuth, newElevation)
 
                     row = [distance, newAzimuth, newElevation, "r"]
                     csvWriter.writerow(row)

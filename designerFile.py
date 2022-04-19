@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\correctGridLayout.ui'
+# Form implementation generated from reading ui file '.\designerFiles\correctGridLayout.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
