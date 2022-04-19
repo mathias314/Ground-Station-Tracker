@@ -72,11 +72,26 @@ What follows are various suggestions for things that need to be implemented, or 
 \subsection{Declination Correction}
 The IMU reports the yaw according to magnetic north. Thus, it is necessary to correct the azimuth to true north. An automatic way to set the declination for whatever location the ground station is located at would be greatly beneficial. As of now, this is hardcoded into the IMU class in the Python program. A more elegant and flexible solution to set the declination automatically would be a great improvement.
 
+\subsection{Bad Readings from IMU}
+Occasionally, the IMU will output incorrect yaw values. This is causing the ground station to occasionally pan to an incorrect position, which will then self correct. I've attempted to remedy this issue by taking an average of a few points to average out the occasional bad reading. It may be good to alter the amount of points that are being averaged to find a good amount of points that filters out the bad readings, but still reports quickly. There may also be other viable methods to remove the bad readings. Ensuring that the IMU doesn't send out errant values would be a good improvement. 
+
+\subsection{Interfacing with IMU}
+Currently, the IMU utilizes another Arduino to send the yaw and pitch values to the ground station software. It may be possible to interface with the sensor directly over the USB port, and get rid of the extra Arduino. 
+
 \subsection{UI Improvements}
 Currently, the UI is not the prettiest, and could use some love. There also may be some  display issues on certain screens. If you'd like to improve how the program displays and looks, that would be a good improvement. 
 
 \subsection{Better Calibration Method (non-IMU)}
 Currently, the non-IMU version requires the sun to be visible to calibrate. This is not ideal, as the sun must be visible in order to calibrate accurately. Currently, a workaround method is to use a compass (ensure that it is set to true north, or you account for magnetic declination) and a level to manually enter the starting location. While this gets the calibration relatively close, it is not super accurate. A better calibration method that does not depend on the sun would be beneficial in making this version more robust.
+
+
+\section{Advantages and Disadvantages of Each System}
+The non-IMU system is cheaper (as it does not require an IMU, or the second Arduino.) However, it does have some more limitations in terms of calibration and ease of use. If the sun is not visible, accurate calibration is very difficult. Additionally, it takes an extra step to calibrate compared to the IMU version. 
+
+The IMU version, while a bit more expensive, does offer some advantages. These include easier calibration/setup, as the user simply needs to connect to the Arduinos, set the ground station location, and select the balloon (they avoid the step of entering/setting the initial starting position of the ground station). Additionally, the IMU tracking version can more accurately utilize the predictive tracking algorithm, as the IMU will negate the impact of backlash in the gears. However, the IMU system is not without its disadvantages. In addition to the cost, the software is a bit more complex. There is the need to account for declination, as the IMU zeros based on magnetic north, not true north. Thus, there needs to be code in place to account for this difference in magnetic zero points. 
+
+Overall, each system has their own respective advantages and disadvantages. 
+
 
 \section{Contact Information}
 If you have any questions, feel free to contact me at mathew.clutter@mines.sdsmt.edu. I'll do my best to get back to you and answer any questions you may have about this software. Best of luck with working with this software!
