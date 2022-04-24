@@ -6,7 +6,7 @@
 
 \title{BRAD Station Software Overview}
 \author{Mathew Clutter }
-\date{\today}
+\date{}
 
 \begin{document}
 
@@ -55,7 +55,7 @@ pip install pyqt5
 For more information, see the PyQt5 documentation. 
 
 \subsection{Creating .exe file}
-Normally, Python is an interpreted language, which requires a Python interpreter to be installed, and the proper libraries to be installed to run a Python program. However, in the interest of making this program more portable and easy for end users to utilize, a .exe file can be created from the Python program. This is done using the pyinstaller package. In order to create an exe from a Python source file, run the following command:
+In the interest of making this program more portable and easy for end users to utilize, a .exe file can be created from the Python program. This is done using the pyinstaller package. In order to create an exe from a Python source file, run the following command:
 \begin{lstlisting}
 pyinstaller --onefile main.py
 \end{lstlisting}
@@ -90,11 +90,9 @@ The non-IMU system is cheaper (as it does not require an IMU, or the second Ardu
 
 The IMU version, while a bit more expensive, does offer some advantages. These include easier calibration/setup, as the user simply needs to connect to the Arduinos, set the ground station location, and select the balloon (they avoid the step of entering/setting the initial starting position of the ground station). Additionally, the IMU tracking version can more accurately utilize the predictive tracking algorithm, as the IMU will negate the impact of backlash in the gears. However, the IMU system is not without its disadvantages. In addition to the cost, the software is a bit more complex. There is the need to account for declination, as the IMU zeros based on magnetic north, not true north. Thus, there needs to be code in place to account for this difference in magnetic zero points. 
 
-Overall, each system has their own respective advantages and disadvantages. 
-
 
 \section{Contact Information}
-If you have any questions, feel free to contact me at mathew.clutter@mines.sdsmt.edu. I'll do my best to get back to you and answer any questions you may have about this software. Best of luck with working with this software!
+If you have any questions, feel free to contact me at mathew.clutter@mines.sdsmt.edu. I'll do my best to get back to you and answer any questions you may have about this software. Good luck with working with this software!
 
 
 \end{document}
